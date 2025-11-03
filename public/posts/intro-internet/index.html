@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  
+    <title>Quick intro to how the internet really works :: AS51019</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Ever since I can remember I have always had some curiosity about the internet. It began with a desire to create websites. Then a desire to publish those websites. Then a desire to build apps out from those websites. And so on.
+Eventually I was deep into application development, having started with PHP, and eventually settling in the JavaScript/TypeScript ecosystem. Publishing (hosting) those applications is what led me to learning about Linux, networking, and a bunch of other &ldquo;sysadmin-y&rdquo; stuff. This is where a new curiosity formed: how does the internet work?
+" />
+<meta name="keywords" content="bgp, internet, routing, submarine cables" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="http://localhost:1313/posts/intro-internet/" />
+
+
+
+
+
+
+  
+  
+  
+  
+  
+  <link rel="stylesheet" href="http://localhost:1313/styles.css">
+
+
+
+
+
+
+
+  <link rel="shortcut icon" href="http://localhost:1313/img/theme-colors/blue.png">
+  <link rel="apple-touch-icon" href="http://localhost:1313/img/theme-colors/blue.png">
+
+
+
+<meta name="twitter:card" content="summary" />
+
+  
+    <meta name="twitter:site" content="" />
+  
+    <meta name="twitter:creator" content="kjartanhr" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Quick intro to how the internet really works">
+<meta property="og:description" content="Ever since I can remember I have always had some curiosity about the internet. It began with a desire to create websites. Then a desire to publish those websites. Then a desire to build apps out from those websites. And so on.
+Eventually I was deep into application development, having started with PHP, and eventually settling in the JavaScript/TypeScript ecosystem. Publishing (hosting) those applications is what led me to learning about Linux, networking, and a bunch of other &ldquo;sysadmin-y&rdquo; stuff. This is where a new curiosity formed: how does the internet work?
+" />
+<meta property="og:url" content="http://localhost:1313/posts/intro-internet/" />
+<meta property="og:site_name" content="AS51019" />
+
+  
+  
+  <meta property="og:image" content="http://localhost:1313/posts/intro-internet/IRIS-link_NORDUnet.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2024-05-02 00:10:04 &#43;0000 UTC" />
+
+
+
+
+
+
+
+
+
+<script type="module" defer>
+    import { polyfillCountryFlagEmojis } from "https://cdn.skypack.dev/country-flag-emoji-polyfill";
+    polyfillCountryFlagEmojis();
+</script>
+
+
+<script src="https://unpkg.com/htmx.org@1.9.12" integrity="sha384-ujb1lZYygJmzgSwoxRggbCHcjc0rB2XoQrxeTUQyRjrOnlCoYta87iKBWq3EsdM2" crossorigin="anonymous"></script>
+
+
+
+
+
+</head>
+<body class="blue" hx-boost="true">
+
+
+<div class="container headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    
+    <img src="/as51019-clean.min.png" alt="AS51019 uwu logo" data-maxres-src="/as51019-clean.png" />
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+        
+          <li><a href="/communities">BGP communities</a></li>
+        
+      
+        
+          <li><a href="/presence">Presence</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="/about" >About</a></li>
+        
+      
+        
+          <li><a href="/communities" >BGP communities</a></li>
+        
+      
+      
+        <li>
+          <ul class="menu">
+            <li class="menu__trigger">Show more&nbsp;▾</li>
+            <li>
+              <ul class="menu__dropdown">
+                
+                  
+                    <li><a href="/presence" >Presence</a></li>
+                  
+                
+              </ul>
+            </li>
+          </ul>
+        </li>
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="http://localhost:1313/posts/intro-internet/">Quick intro to how the internet really works</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2024-05-02</time><span class="post-author">Kjartan Hrafnkelsson</span><span class="post-reading-time">9 min read (1793 words)</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="http://localhost:1313/tags/internet/">internet</a>&nbsp;
+      
+      #<a href="http://localhost:1313/tags/bgp/">bgp</a>&nbsp;
+      
+      #<a href="http://localhost:1313/tags/routing/">routing</a>&nbsp;
+      
+    </span>
+  
+  
+  <img src="http://localhost:1313/posts/intro-internet/IRIS-link_NORDUnet.png"
+    class="post-cover"
+    alt="Quick intro to how the internet really works"
+    title="Cover Image" />
+
+
+  
+
+  <div class="post-content"><div>
+        <p>Ever since I can remember I have always had some curiosity about the internet. It began with a desire to create websites. Then a desire to publish those websites. Then a desire to build apps out from those websites. And so on.</p>
+<p>Eventually I was deep into application development, having started with PHP, and eventually settling in the JavaScript/TypeScript ecosystem. Publishing (hosting) those applications is what led me to learning about Linux, networking, and a bunch of other &ldquo;sysadmin-y&rdquo; stuff. This is where a new curiosity formed: <strong>how does the internet work?</strong></p>
+<h1 id="how-does-the-internet-work">How does the internet work?<a href="#how-does-the-internet-work" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h1>
+<p>Whenever I asked this question - online or in real life - I never felt satisfied with the answer. Sometimes I&rsquo;d receive more information than other times, but never did it go any deeper than merely &ldquo;the internet is like a series of tubes&rdquo;. This isn&rsquo;t incorrect, those &ldquo;tubes&rdquo; would be subsea and landline fibre routes, but it isn&rsquo;t very helpful either. Someone who wants to dive deeper won&rsquo;t feel very satisfied, like how I wasn&rsquo;t, hearing the same information repeatedly. However, this is useful foundational knowledge.</p>
+<p>When people repeat this phrase &ldquo;the internet is like a series of tubes&rdquo; they are referring to, as I mentioned, the subsea and landline fibre routes that carry internet traffic between places. But it&rsquo;s more complicated than that.</p>
+<p>To develop an understanding of how this seemingly abstract network of cables forms the internet, it is best to scratch the idea of an &ldquo;internet&rdquo; at all. Rather, the internet is actually a bunch of smaller networks all connected together in one way or another. These are companies - big and small - ranging from large ISPs like France&rsquo;s Orange to tiny content networks like Panascais back to large content networks like Google.</p>
+<p>These smaller networks are connected to each other via the fibre mentioned above. Sometimes they&rsquo;ll be directly connected together, usually because it saves money. Most of the time they&rsquo;ll be connected through another network called a &ldquo;transit provider&rdquo; or a &ldquo;carrier&rdquo;. We call them that because traffic on their network isn&rsquo;t actually originating or terminating from or to them. Rather it&rsquo;s crossing (&ldquo;transiting&rdquo;) their network.</p>
+<p>But ok&hellip; back to the question I had as a kid&hellip; how does the internet <em>really</em> work? Like, how does my computer know the right cable to send packets through if I ping a Hetzner IP address???</p>
+<h1 id="routing">Routing<a href="#routing" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h1>
+<p>Turns out the answer to this question is actually hidden behind another question - what is and how does routing work?</p>
+<p>To put it simply, routing is like driving a car. You may intuitively know the route from your house to your closest &ldquo;multi-lane road&rdquo;™, but you might need some guidance getting to a beach you haven&rsquo;t been to before.</p>
+<p>In this analogy, the way to the big wide multi-lane road might be like the way from your device to your home router, and from your router to your ISPs router. The secret here really are these boxes we call &ldquo;routers&rdquo;. They are really just computers, but they - somehow - know how to receive traffic on one network port (like an ethernet port, that is) and send it out another.</p>
+<p>To do this routers keep a special table in their system called a &ldquo;routing table&rdquo;. It is a table of &ldquo;routes&rdquo;. Routes are also called &ldquo;prefixes&rdquo; in networking spaces as they used to work on a prefix based system. If an IP address started with <code>38</code> you would know to send it to Cogent (not the waste management company). Today this works slightly differently (Google &ldquo;CIDR&rdquo; if interested) but the principle is the same and the old model is easier to explain so I&rsquo;ll stick to that.</p>
+<p>Now, your home router has a very simple routing table. Likely it has a route for your home network, commonly prefixed with <code>192.168.x</code>, and a &ldquo;default&rdquo; route that sends all traffic out the port connected to your ISP. This is your &ldquo;internet connection&rdquo;.</p>
+<p>A core element of this system is specificity. Your router will prefer routes that are <em>more specific</em>. A route for the prefix <code>192.168.1 via port0</code> will take priority over a route for <code>192.168 via port1</code>, if the destination address begins with <code>192.168.1</code>. This way you can target traffic bound to addresses with a certain prefix but leave other traffic within the same &ldquo;parent prefix&rdquo; alone. This is how your home router can communicate with your device despite having a route forwarding all traffic to your ISP.</p>
+<p>Lastly, your ISP also has some routers. In fact everyone on the internet has some routers. Really the internet is closer to &ldquo;just a bunch of routers&rdquo; than &ldquo;just a bunch of tubes&rdquo;. These routers similarly hold routing tables that tell traffic where to go.</p>
+<p>So when you send traffic to that Hetzner IP address, your home router will send it to your ISPs router which will then send it to another router which will the&hellip; I think you get the idea. We can even see this semi-visually with tools like <code>traceroute</code> or <code>mtr</code>:</p>
+<pre tabindex="0"><code>kjartan@fenrir:~$ mtr -4 -w hetzner.com
+Start: 2024-05-02T00:52:02+0000
+HOST: fenrir                             Loss%   Snt   Last   Avg StDev
+  1.|-- _gateway                          0.0%    10    0.5   0.4   0.1
+  2.|-- 85-220-0-1.dsl.dynamic.simnet.is  0.0%    10    1.5   2.5   0.8
+  3.|-- siminn-linx-gw-1.isholf.is        0.0%    10   41.0  40.9   0.6
+  4.|-- ???                              100.0    10    0.0   0.0   0.0
+  5.|-- core6.par.hetzner.com             0.0%    10   55.4  55.4   0.8
+  6.|-- core11.nbg1.hetzner.com           0.0%    10   57.4  57.1   1.3
+  7.|-- ???                              100.0    10    0.0   0.0   0.0
+</code></pre><p>Here I am &ldquo;tracing the route&rdquo; to <code>hetzner.com</code>. As you can see the first hop, labeled <code>1</code>, is my home router. Hop <code>2</code> is my ISPs router, so is <code>3</code> only in London this time. Hop <code>4</code> we don&rsquo;t know what is but hops <code>5</code> and <code>6</code> are Hetzner&rsquo;s. But&hellip; how does this then work??? There&rsquo;s no way Hetzner and my ISPs are good enough friends to be manually configuring routes to each other&hellip;</p>
+<h1 id="border-gateway-protocol">Border Gateway Protocol<a href="#border-gateway-protocol" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h1>
+<p>Border Gateway Protocol, BGP, is the glue of the internet backbone. It is how the networks we spent so long talking about actually do this &ldquo;routing&rdquo; between each other.</p>
+<p>It&rsquo;s quite simple for what it does. Two routers, directly connected with each other, are configured to establish a &ldquo;BGP session&rdquo; between themselves. This just a fancy name for a TCP socket with some <em>very useful (critical)</em> safety features that make sure the other router (&ldquo;neighbor&rdquo;) hasn&rsquo;t died or disconnected.</p>
+<p>Through this socket these routers will send each other the routes they wish to &ldquo;announce&rdquo;. When either router receives a route from the other it decides if it wants to accept it and insert it into its routing table or not. Famously, this has caused <a href="https://www.ripe.net/publications/news/youtube-hijacking-a-ripe-ncc-ris-case-study/">massive problems</a> before.</p>
+<p>What truly makes everything work, though, is the transit networks we discussed above. <em>Obviously</em> not every AS (&ldquo;autonomous system&rdquo; aka. &ldquo;network&rdquo;) can connect with every other AS - it&rsquo;d be impractical, expensive, and messy. So what our dear ISPs (and content networks too!) do is&hellip; buy <em>their</em> internet from&hellip; another ISP?</p>
+<p>It sounds confusing and silly at first but in the context of just &ldquo;exchanging routes&rdquo; it makes a lot of sense. These &ldquo;transit networks&rdquo; (or &ldquo;ISPs for ISPs&rdquo;) will do all the &lsquo;connecting with other networks&rsquo; business <em>for us</em> and then basically &lsquo;rent the routes&rsquo; they receive out to us. In technical terms they take the routes they accept from a peer and announce them to all other peers and customers.</p>
+<p>Of course, the actual value of this service comes from the fact that these networks maintain high capacity, redundant connections between places on behalf of the smaller guys. The cost is paid up by the purchasers of the service (ISPs) and a profit is made from marking the price up slightly (or not so slightly, <del>shoutout AS3320</del>).</p>
+<p>It&rsquo;s also worth mentioning that BGP identifies networks by an &ldquo;autonomous system number&rdquo; (&ldquo;ASN&rdquo;). They start with <code>AS</code> followed by up to ten digits. Though these days we only ever see one to six digits. This is why this &ldquo;blog&rdquo; is called <code>AS51019</code>, it&rsquo;s my ASN.</p>
+<p>Indeed, if we re-run our <code>mtr</code> from above with the <code>-z</code> flag we can see the ASNs each router belongs to:</p>
+<pre tabindex="0"><code>kjartan@fenrir:~$ mtr -4 -zw hetzner.com
+Start: 2024-05-02T01:03:49+0000
+HOST: fenrir                                    Loss%   Snt   Last   Avg StDev
+  1. AS???    _gateway                           0.0%    10    0.5   0.4   0.1
+  2. AS6677   85-220-0-1.dsl.dynamic.simnet.is   0.0%    10    2.3   2.1   0.7
+  3. AS???    siminn-linx-gw-1.isholf.is         0.0%    10   41.5  40.9   0.8
+  4. AS???    ???                               100.0    10    0.0   0.0   0.0
+  5. AS24940  core6.par.hetzner.com              0.0%    10   55.7  55.7   0.7
+  6. AS24940  core11.nbg1.hetzner.com            0.0%    10   57.5  56.8   0.6
+  7. AS???    ???                               100.0    10    0.0   0.0   0.0
+</code></pre><p><code>AS6677</code> is my current ISP; <code>AS24940</code> is Hetzner. <code>AS???</code> is, of course, simply an AS we can&rsquo;t identify (usually because <em>some</em> assholes block ICMP).</p>
+<p>Similarly, we can see a transit network in a traceroute like this by tracing the route to something e.g. on another continent:</p>
+<pre tabindex="0"><code>kjartan@fenrir:~$ mtr -4 -zw 64.187.208.1
+Start: 2024-05-02T01:26:51+0000
+HOST: fenrir                                       Loss%   Snt   Last   Avg StDev
+  1. AS???    _gateway                              0.0%    10    0.4   0.4   0.1
+  2. AS6677   85-220-0-1.dsl.dynamic.simnet.is      0.0%    10    2.1   2.4   0.8
+  3. AS6677   hu0-0-40.db2.dub.ie.ip.siminn.is      0.0%    10   24.9  25.1   0.6
+  4. AS2128   10ge16-1.core1.dub1.he.net           10.0%    10   25.4  25.1   0.9
+  5. AS6939   port-channel4.core2.nyc5.he.net       0.0%    10  102.4 102.0   1.4
+  6. AS6939   port-channel8.core2.nyc4.he.net      90.0%    10  105.3 105.3   0.0
+  7. AS6939   port-channel18.core3.chi1.he.net     80.0%    10  121.1 122.1   1.4
+  8. AS6939   port-channel1.core2.chi1.he.net      80.0%    10  117.2 116.5   1.1
+  9. AS6939   port-channel18.core2.sea1.he.net     20.0%    10  153.7 153.5   2.4
+ 10. AS1299   doof-ic-375811.ip.twelve99-cust.net   0.0%    10  150.5 150.8   0.7
+ 11. AS47689  r1-sea-a.as47689.net                  0.0%    10  151.5 151.4   0.7
+</code></pre><p><code>AS6939</code>, Hurricane Electric of the USA, is a widely known transit network. But oh look! There&rsquo;s another! <code>AS1299</code>, Arelion of Sweden, sits between <code>AS6939</code> and <code>AS47689</code> (shoutout Wes!). Arelion happens to be the 2nd-largest transit network in the world as measured by CAIDA AS Rank.</p>
+<h1 id="in-summary">In summary<a href="#in-summary" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h1>
+<ul>
+<li>The internet is &ldquo;just a bunch of tubes&rdquo; between &ldquo;just a bunch of routers&rdquo;.</li>
+<li>Routers are computers that tell traffic entering through one port to exit through another, based on routing tables.</li>
+<li>Routing tables are tables of routes. Routes are &ldquo;prefixes&rdquo; to IP addresses. More specific routes take preference over less specific ones.</li>
+<li>Your home router has a static routing table. It sends all traffic to your ISP.</li>
+<li>ISPs use Border Gateway Protocol to exchange routing information.</li>
+<li>When ISPs can&rsquo;t connect to a network on their own they rely on another ISP. An ISP for your ISP. ISPception. They&rsquo;re called &ldquo;transit networks&rdquo; or &ldquo;carriers&rdquo; because they &ldquo;transit&rdquo; or &ldquo;carry&rdquo; traffic across their network.</li>
+</ul>
+<h1 id="further-reading">Further reading<a href="#further-reading" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h1>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Peering">Peering</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Internet_exchange_point">Internet exchange points</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Autonomous_system_(Internet)">Autonomous systems</a></li>
+<li><a href="https://en.wikipedia.org/wiki/IP_address">IP addresses</a></li>
+<li><a href="https://en.wikipedia.org/wiki/IP_routing">IP routing</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Tier_1_network">Tier 1 networks</a></li>
+</ul>
+<h1 id="other-resources">Other resources<a href="#other-resources" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h1>
+<ul>
+<li><a href="https://bgp.tools/">Explore the internet ecosystem</a></li>
+<li><a href="https://discord.gg/ipv6">&ldquo;Networking: IPv6&rdquo; Discord server</a></li>
+<li><a href="https://discord.gg/Q3tZVbJYXH">&ldquo;the nettwork&rdquo; Discord server</a></li>
+</ul>
+<h1 id="questionscomments">Questions/comments<a href="#questionscomments" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h1>
+<p>If you&rsquo;d like to ask me something - perhaps inquiries related to the post rather than tech support on BGP etc. ;) - or have a comment I&rsquo;d be happy chat via <a href="mailto:kjartann@kjartann.is">kjartann@kjartann.is</a>.</p>
+<img src="/owiehappy.gif" alt=":owiehappy: emoji" width="48" />
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+    <div class="pagination__title">
+        <span class="pagination__title-h">Read other posts</span>
+        <hr />
+    </div>
+    <div class="pagination__buttons">
+        
+        <span class="button previous">
+            <a href="http://localhost:1313/posts/aspa-bird2/">
+                <span class="button__icon">←</span>
+                <span class="button__text">ASPA path validation in BIRD2 with Routinator and TypeScript</span>
+            </a>
+        </span>
+        
+        
+    </div>
+</div>
+
+  
+
+  
+    
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2025 Octan Ltd. :: <a href="/credits">Credits</a></span>
+    
+      <span>:: <a href="/imprint">Imprint</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+
+<script data-collect-dnt="true" async defer src="https://1984.as51019.com/latest.js"></script>
+<noscript><img src="https://1984.as51019.com/noscript.gif?collect-dnt=true" alt="" referrerpolicy="no-referrer-when-downgrade" /></noscript>
+</body>
+</html>

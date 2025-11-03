@@ -1,8 +1,8 @@
 +++
 title = "ASPA path validation in BIRD2 with Routinator and TypeScript"
 date = "2024-05-02T23:27:27Z"
-author = "Kjartan Hrafnkelsson"
-authorTwitter = "kjartanhr" #do not include @
+author = "Kría Elínarbur"
+authorTwitter = "kriawastaken" #do not include @
 cover = ""
 tags = ["routing security", "rpki", "aspa"]
 keywords = ["", ""]

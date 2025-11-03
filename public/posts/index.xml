@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on AS51019</title>
+    <link>http://localhost:1313/posts/</link>
+    <description>Recent content in Posts on AS51019</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Thu, 02 May 2024 23:27:27 +0000</lastBuildDate><atom:link href="http://localhost:1313/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>ASPA path validation in BIRD2 with Routinator and TypeScript</title>
+      <link>http://localhost:1313/posts/aspa-bird2/</link>
+      <pubDate>Thu, 02 May 2024 23:27:27 +0000</pubDate>
+      
+      <guid>http://localhost:1313/posts/aspa-bird2/</guid>
+      <description>&lt;p&gt;Recently (or not so recently?) some RFCs were published on the topic of a new standard in routing security. This is the ASPA (Autonomous System Provider Authorization) Objects system.&lt;/p&gt;
+&lt;p&gt;Even more recently &lt;a href=&#34;https://manrs.org/2023/02/unpacking-the-first-route-leak-prevented-by-aspa/&#34;&gt;the first route leak prevented by ASPA&lt;/a&gt; ocurred, in february 2023.&lt;/p&gt;
+&lt;p&gt;I thought it might be fun to explore if we could achieve the same thing, only with BIRD2, some open source tools, and a bit of TypeScript. So let&amp;rsquo;s dive in!&lt;/p&gt;</description>
+      <content>&lt;p&gt;Recently (or not so recently?) some RFCs were published on the topic of a new standard in routing security. This is the ASPA (Autonomous System Provider Authorization) Objects system.&lt;/p&gt;
+&lt;p&gt;Even more recently &lt;a href=&#34;https://manrs.org/2023/02/unpacking-the-first-route-leak-prevented-by-aspa/&#34;&gt;the first route leak prevented by ASPA&lt;/a&gt; ocurred, in february 2023.&lt;/p&gt;
+&lt;p&gt;I thought it might be fun to explore if we could achieve the same thing, only with BIRD2, some open source tools, and a bit of TypeScript. So let&amp;rsquo;s dive in!&lt;/p&gt;
+&lt;h1 id=&#34;rpki-client&#34;&gt;rpki-client&lt;/h1&gt;
+&lt;p&gt;Initially my intuition for this was to use &lt;code&gt;rpki-client&lt;/code&gt; as I had seen this tool used by Job Snijders and other big names in the &amp;ldquo;routing security space&amp;rdquo;.&lt;/p&gt;
+&lt;p&gt;The maintainers of &lt;code&gt;rpki-client&lt;/code&gt; also happened to publish &lt;a href=&#34;https://console.rpki-client.org/&#34;&gt;a website&lt;/a&gt; showing dumps given by &lt;code&gt;rpki-client&lt;/code&gt; at certain intervals in a web-accessible form. &lt;a href=&#34;https://console.rpki-client.org/aspa.html&#34;&gt;There even is an ASPA page!&lt;/a&gt;. Cool!&lt;/p&gt;
+&lt;p&gt;Unfortunately I only ran into issues with &lt;code&gt;rpki-client&lt;/code&gt;. It&amp;rsquo;d do funky stuff like not being able to connect to most repos and run out of memory, for whatever reason.&lt;/p&gt;
+&lt;p&gt;So I changed course.&lt;/p&gt;
+&lt;h1 id=&#34;routinator&#34;&gt;Routinator&lt;/h1&gt;
+&lt;p&gt;When I was doing this I happened to be in a call in the &lt;a href=&#34;https://discord.gg/ipv6&#34;&gt;Network: IPv6 Discord&lt;/a&gt; where Lee, a comrade from the networking space, pointed out that NLnet&amp;rsquo;s Routinator could do ASPA. Indeed, &lt;a href=&#34;https://routinator.docs.nlnetlabs.nl/en/stable/advanced-features.html#aspa&#34;&gt;it can&lt;/a&gt; though it requires some modification.&lt;/p&gt;
+&lt;p&gt;To do this we have to follow &lt;a href=&#34;https://routinator.docs.nlnetlabs.nl/en/stable/building.html&#34;&gt;Routinator&amp;rsquo;s guide for compiling from source&lt;/a&gt;. This is so we can build the software with the feature flag that enables ASPA.&lt;/p&gt;
+&lt;p&gt;Luckily this is pretty simple and boils down to running the correct command after installing rust on your system:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# some build tools&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;apt install build-essential
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# install rust (please dont pipe to bash in production)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;curl --proto &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;=https&amp;#39;&lt;/span&gt; --tlsv1.2 -sSf https://sh.rustup.rs | sh
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# add cargo to $PATH (note the period, it&amp;#39;s important)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;. &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;$HOME&lt;span style=&#34;color:#e6db74&#34;&gt;/.cargo/env&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# build routinator with aspa&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;cargo install --locked --features aspa routinator
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Now we can run &lt;code&gt;routinator&lt;/code&gt; with the &lt;code&gt;--enable-aspa&lt;/code&gt; flag. Cool!&lt;/p&gt;
+&lt;h1 id=&#34;getting-current-aspa-data&#34;&gt;Getting current ASPA data&lt;/h1&gt;
+&lt;p&gt;Now, to do anything useful here we have to retrieve all current ASPA ASAs (I think these are like certificates?) from the RPKI publication servers around the world.&lt;/p&gt;
+&lt;p&gt;Unfortunately, since this proposed standard is so new (and not even accepted yet - for the record) there exists no TCP transport mechanism (and certainly no implementation for it in BIRD2) to import ASPA data into a routing daemon. Instead we&amp;rsquo;ll have to move the data ourselves and make it work with BIRD2 ourselves.&lt;/p&gt;
+&lt;p&gt;Routinator makes this &lt;em&gt;really easy&lt;/em&gt; and lets us output to JSON, just what we need to do some scripting with Deno later:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;routinator --enable-aspa vrps -f json -o dump.json --no-route-origins --no-router-keys
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;What&amp;rsquo;s happening here is quite simple. We run &lt;code&gt;routinator&lt;/code&gt; with the &lt;code&gt;--enable-aspa&lt;/code&gt; flag to use ASPA features. Then we run the &lt;code&gt;vrps&lt;/code&gt; subcommand and pass the following options to it:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;-f json&lt;/code&gt; - output to JSON format.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-o dump.json&lt;/code&gt; - write the output to a new file called &lt;code&gt;dump.json&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--no-route-origins&lt;/code&gt; exclude ROAs..&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--no-router-keys&lt;/code&gt; exclude router keys.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;This command does take a while to run, so it probably fits in nicely as a cronjob. But once it finishes we get a file that looks &lt;a href=&#34;http://localhost:1313/posts/aspa-bird2/dump.json&#34;&gt;something like this&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Now we just have to use it.&lt;/p&gt;
+&lt;h1 id=&#34;writing-a-filter-function-for-bird2&#34;&gt;Writing a filter function for BIRD2&lt;/h1&gt;
+&lt;p&gt;I&amp;rsquo;ll be the first to admit to being no BIRD expert but I do have a few tricks up my sleeve. AS path filtering is one of them.&lt;/p&gt;
+&lt;p&gt;The filter (or I guess conditional) that makes what I want to achieve possible is the following:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;bgp_path ~ [= * ASN * =]
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;In summary it will return true if the specified ASN exists within the AS path. You can also pass multiple ASNs to it and check for order:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;bgp_path ~ [= * ASN1 ASN2 * =] )
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;In this example, &lt;code&gt;ASN1&lt;/code&gt; would be &lt;code&gt;ASN2&lt;/code&gt;&amp;rsquo;s permitted carrier (&amp;ldquo;provider&amp;rdquo; in ASPA speak).&lt;/p&gt;
+&lt;p&gt;Using these two conditions we can quite easily create a functional, but rather sloppy, filter function for published ASAs.&lt;/p&gt;
+&lt;p&gt;The pseudocode looks a little like this:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;boolean&lt;/span&gt; is aspa &lt;span style=&#34;color:#a6e22e&#34;&gt;valid&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (asa publisher asn in path) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (provider1 asn before asa publisher asn in path) &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (provider2 asn before asa publisher asn in path) &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (providerN asn before asa publisher asn in path) &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;false&lt;/span&gt;; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;I&amp;rsquo;m sure this code could be improved for performance and efficiency - my online mates already seem to think so - but this will work for our purposes for now.&lt;/p&gt;
+&lt;h1 id=&#34;generating-the-filter-function&#34;&gt;Generating the filter function&lt;/h1&gt;
+&lt;p&gt;I chose to write &lt;a href=&#34;https://github.com/kjartanhr/routinator-aspa-json-to-bird2&#34;&gt;a TypeScript program&lt;/a&gt; with Deno to achieve what I&amp;rsquo;d like to do here. Deno also conveniently allows you to &amp;ldquo;compile&amp;rdquo; (really it&amp;rsquo;s just bundling) the program to a binary that can run portably, which is handy. Though the binary does end up being around 130MB in size. Yikes!&lt;/p&gt;
+&lt;p&gt;The program&amp;rsquo;s 100~ lines come mostly from error handling and CLI flag boilerplate. The actual logic is 14 lines consisting of a for loop with a nested one inside it:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-typescript&#34; data-lang=&#34;typescript&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;txt&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; {&lt;span style=&#34;color:#a6e22e&#34;&gt;customer&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;providers&lt;/span&gt;} &lt;span style=&#34;color:#66d9ef&#34;&gt;of&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;aspas&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;asn&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;customer&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;replace&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;LEADING_AS&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;txt&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;`   # does the AS path include &lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;${&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;customer&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;?&lt;/span&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;\&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;n`&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;txt&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;`   if (bgp_path ~ [= * &lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;${&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;asn&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt; * =]) then {&lt;/span&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;\&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;n`&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;txt&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;`       # does the AS path include [carrier&amp;#39;s asn, &lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;${&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;customer&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;]?&lt;/span&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;\&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;n`&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;provider&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;of&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;providers&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;carrier&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;provider&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;replace&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;LEADING_AS&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#a6e22e&#34;&gt;txt&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;`       if (bgp_path ~ [= * &lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;${&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;carrier&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt; &lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;${&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;asn&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt; * =]) then return true;&lt;/span&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;\&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;n`&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;txt&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;       return false;\n&amp;#39;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;txt&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;   }\n\n&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;There are a few more lines of boilerplate but you get the gist. The resulting function definition you get from running the program looks a little like this:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-rust&#34; data-lang=&#34;rust&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;function is_aspa_valid () {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;   # does the &lt;span style=&#34;color:#66d9ef&#34;&gt;AS&lt;/span&gt; path include &lt;span style=&#34;color:#66d9ef&#34;&gt;AS945&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;?&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;   &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (bgp_path &lt;span style=&#34;color:#f92672&#34;&gt;~&lt;/span&gt; [&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;945&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;]) then {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;       # does the &lt;span style=&#34;color:#66d9ef&#34;&gt;AS&lt;/span&gt; path include [carrier&lt;span style=&#34;color:#a6e22e&#34;&gt;&amp;#39;s&lt;/span&gt; asn, &lt;span style=&#34;color:#66d9ef&#34;&gt;AS945&lt;/span&gt;]&lt;span style=&#34;color:#f92672&#34;&gt;?&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;       &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (bgp_path &lt;span style=&#34;color:#f92672&#34;&gt;~&lt;/span&gt; [&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;174&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;945&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;]) then &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;       &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (bgp_path &lt;span style=&#34;color:#f92672&#34;&gt;~&lt;/span&gt; [&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1299&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;945&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;]) then &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;       &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (bgp_path &lt;span style=&#34;color:#f92672&#34;&gt;~&lt;/span&gt; [&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;3491&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;945&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;]) then &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;       &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (bgp_path &lt;span style=&#34;color:#f92672&#34;&gt;~&lt;/span&gt; [&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;6461&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;945&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;]) then &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;       &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (bgp_path &lt;span style=&#34;color:#f92672&#34;&gt;~&lt;/span&gt; [&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;6939&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;945&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;]) then &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;       &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (bgp_path &lt;span style=&#34;color:#f92672&#34;&gt;~&lt;/span&gt; [&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;7018&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;945&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;]) then &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;       &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (bgp_path &lt;span style=&#34;color:#f92672&#34;&gt;~&lt;/span&gt; [&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;7922&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;945&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;]) then &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;       &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (bgp_path &lt;span style=&#34;color:#f92672&#34;&gt;~&lt;/span&gt; [&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;9002&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;945&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;]) then &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;       &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (bgp_path &lt;span style=&#34;color:#f92672&#34;&gt;~&lt;/span&gt; [&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;32097&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;945&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;]) then &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;       &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;false&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;   }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;   &lt;span style=&#34;color:#f92672&#34;&gt;..&lt;/span&gt;.
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;   # to avoid breaking stuff, assume the path is valid &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; no &lt;span style=&#34;color:#66d9ef&#34;&gt;ASA&lt;/span&gt; exists.
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;   &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;With that, using the generated function is as easy as shoving it in a &lt;code&gt;/etc/bird/functions/aspa.conf&lt;/code&gt; file, including it in &lt;code&gt;bird.conf&lt;/code&gt; and using it for filtering!&lt;/p&gt;
+&lt;p&gt;Using the function should look a little like this:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code class=&#34;language-conf&#34; data-lang=&#34;conf&#34;&gt;if (!is_aspa_valid()) then reject &amp;#34;aspa: not ok&amp;#34;;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Typing &lt;code&gt;birdc c&lt;/code&gt; to reconfigure BIRD is a little underwhelming, though. Barely anyone publishes ASAs currently and the few that are won&amp;rsquo;t be likely to push out ASPA invalid routes any time soon. Once in a while we might find a route leak prevented by this system but it won&amp;rsquo;t be much for a &lt;em&gt;while&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;However, to have some fun, we can just poke at the ASPA function and comment out a few key lines. For example: during testing I removed the line permitting Hurricane Electric, AS6939, to carry AS945&amp;rsquo;s routes. The result was successful in that it removed any routes from AS945 with AS6939 in the AS path from BIRDs version of the &amp;ldquo;RIB&amp;rdquo;.&lt;/p&gt;
+&lt;h1 id=&#34;closing&#34;&gt;Closing&lt;/h1&gt;
+&lt;p&gt;I think this was a fun evening project. It didn&amp;rsquo;t take too long and was pretty satisfying. It also taught me a bit about ASPA that I didn&amp;rsquo;t know before.&lt;/p&gt;
+&lt;p&gt;If you&amp;rsquo;d like to do this for yourself I&amp;rsquo;d like to reiterate that ASPA is an incredibly new and unapproved standard that will undoubtedly change. I wouldn&amp;rsquo;t do this in production quite yet. Regardless I &lt;a href=&#34;https://github.com/kjartanhr/routinator-aspa-json-to-bird2&#34;&gt;published my program on GitHub&lt;/a&gt; and I encourage you, if you have any improvements, to make a pull request &lt;img src=&#34;http://localhost:1313/owiehappy.png&#34; alt=&#34;:owiehappy:&#34; height=&#34;24&#34; style=&#34;display:inline-block;margin-bottom:-8px;margin-left:-3px;&#34; /&gt;&lt;/p&gt;
+&lt;h1 id=&#34;some-references&#34;&gt;Some references&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://console.rpki-client.org/&#34;&gt;rpki-client console&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://routinator.docs.nlnetlabs.nl/en/stable/&#34;&gt;Routinator&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&#34;questionscomments&#34;&gt;Questions/comments&lt;/h1&gt;
+&lt;p&gt;If you&amp;rsquo;d like to ask me something or have a comment I&amp;rsquo;d be happy chat via &lt;a href=&#34;mailto:kjartann@kjartann.is&#34;&gt;kjartann@kjartann.is&lt;/a&gt;.&lt;/p&gt;
+&lt;img src=&#34;http://localhost:1313/owiehappy.gif&#34; alt=&#34;:owiehappy: emoji&#34; width=&#34;48&#34; /&gt;
+</content>
+    </item>
+    
+    <item>
+      <title>Quick intro to how the internet really works</title>
+      <link>http://localhost:1313/posts/intro-internet/</link>
+      <pubDate>Thu, 02 May 2024 00:10:04 +0000</pubDate>
+      
+      <guid>http://localhost:1313/posts/intro-internet/</guid>
+      <description>&lt;p&gt;Ever since I can remember I have always had some curiosity about the internet. It began with a desire to create websites. Then a desire to publish those websites. Then a desire to build apps out from those websites. And so on.&lt;/p&gt;
+&lt;p&gt;Eventually I was deep into application development, having started with PHP, and eventually settling in the JavaScript/TypeScript ecosystem. Publishing (hosting) those applications is what led me to learning about Linux, networking, and a bunch of other &amp;ldquo;sysadmin-y&amp;rdquo; stuff. This is where a new curiosity formed: &lt;strong&gt;how does the internet work?&lt;/strong&gt;&lt;/p&gt;</description>
+      <content>&lt;p&gt;Ever since I can remember I have always had some curiosity about the internet. It began with a desire to create websites. Then a desire to publish those websites. Then a desire to build apps out from those websites. And so on.&lt;/p&gt;
+&lt;p&gt;Eventually I was deep into application development, having started with PHP, and eventually settling in the JavaScript/TypeScript ecosystem. Publishing (hosting) those applications is what led me to learning about Linux, networking, and a bunch of other &amp;ldquo;sysadmin-y&amp;rdquo; stuff. This is where a new curiosity formed: &lt;strong&gt;how does the internet work?&lt;/strong&gt;&lt;/p&gt;
+&lt;h1 id=&#34;how-does-the-internet-work&#34;&gt;How does the internet work?&lt;/h1&gt;
+&lt;p&gt;Whenever I asked this question - online or in real life - I never felt satisfied with the answer. Sometimes I&amp;rsquo;d receive more information than other times, but never did it go any deeper than merely &amp;ldquo;the internet is like a series of tubes&amp;rdquo;. This isn&amp;rsquo;t incorrect, those &amp;ldquo;tubes&amp;rdquo; would be subsea and landline fibre routes, but it isn&amp;rsquo;t very helpful either. Someone who wants to dive deeper won&amp;rsquo;t feel very satisfied, like how I wasn&amp;rsquo;t, hearing the same information repeatedly. However, this is useful foundational knowledge.&lt;/p&gt;
+&lt;p&gt;When people repeat this phrase &amp;ldquo;the internet is like a series of tubes&amp;rdquo; they are referring to, as I mentioned, the subsea and landline fibre routes that carry internet traffic between places. But it&amp;rsquo;s more complicated than that.&lt;/p&gt;
+&lt;p&gt;To develop an understanding of how this seemingly abstract network of cables forms the internet, it is best to scratch the idea of an &amp;ldquo;internet&amp;rdquo; at all. Rather, the internet is actually a bunch of smaller networks all connected together in one way or another. These are companies - big and small - ranging from large ISPs like France&amp;rsquo;s Orange to tiny content networks like Panascais back to large content networks like Google.&lt;/p&gt;
+&lt;p&gt;These smaller networks are connected to each other via the fibre mentioned above. Sometimes they&amp;rsquo;ll be directly connected together, usually because it saves money. Most of the time they&amp;rsquo;ll be connected through another network called a &amp;ldquo;transit provider&amp;rdquo; or a &amp;ldquo;carrier&amp;rdquo;. We call them that because traffic on their network isn&amp;rsquo;t actually originating or terminating from or to them. Rather it&amp;rsquo;s crossing (&amp;ldquo;transiting&amp;rdquo;) their network.&lt;/p&gt;
+&lt;p&gt;But ok&amp;hellip; back to the question I had as a kid&amp;hellip; how does the internet &lt;em&gt;really&lt;/em&gt; work? Like, how does my computer know the right cable to send packets through if I ping a Hetzner IP address???&lt;/p&gt;
+&lt;h1 id=&#34;routing&#34;&gt;Routing&lt;/h1&gt;
+&lt;p&gt;Turns out the answer to this question is actually hidden behind another question - what is and how does routing work?&lt;/p&gt;
+&lt;p&gt;To put it simply, routing is like driving a car. You may intuitively know the route from your house to your closest &amp;ldquo;multi-lane road&amp;rdquo;™, but you might need some guidance getting to a beach you haven&amp;rsquo;t been to before.&lt;/p&gt;
+&lt;p&gt;In this analogy, the way to the big wide multi-lane road might be like the way from your device to your home router, and from your router to your ISPs router. The secret here really are these boxes we call &amp;ldquo;routers&amp;rdquo;. They are really just computers, but they - somehow - know how to receive traffic on one network port (like an ethernet port, that is) and send it out another.&lt;/p&gt;
+&lt;p&gt;To do this routers keep a special table in their system called a &amp;ldquo;routing table&amp;rdquo;. It is a table of &amp;ldquo;routes&amp;rdquo;. Routes are also called &amp;ldquo;prefixes&amp;rdquo; in networking spaces as they used to work on a prefix based system. If an IP address started with &lt;code&gt;38&lt;/code&gt; you would know to send it to Cogent (not the waste management company). Today this works slightly differently (Google &amp;ldquo;CIDR&amp;rdquo; if interested) but the principle is the same and the old model is easier to explain so I&amp;rsquo;ll stick to that.&lt;/p&gt;
+&lt;p&gt;Now, your home router has a very simple routing table. Likely it has a route for your home network, commonly prefixed with &lt;code&gt;192.168.x&lt;/code&gt;, and a &amp;ldquo;default&amp;rdquo; route that sends all traffic out the port connected to your ISP. This is your &amp;ldquo;internet connection&amp;rdquo;.&lt;/p&gt;
+&lt;p&gt;A core element of this system is specificity. Your router will prefer routes that are &lt;em&gt;more specific&lt;/em&gt;. A route for the prefix &lt;code&gt;192.168.1 via port0&lt;/code&gt; will take priority over a route for &lt;code&gt;192.168 via port1&lt;/code&gt;, if the destination address begins with &lt;code&gt;192.168.1&lt;/code&gt;. This way you can target traffic bound to addresses with a certain prefix but leave other traffic within the same &amp;ldquo;parent prefix&amp;rdquo; alone. This is how your home router can communicate with your device despite having a route forwarding all traffic to your ISP.&lt;/p&gt;
+&lt;p&gt;Lastly, your ISP also has some routers. In fact everyone on the internet has some routers. Really the internet is closer to &amp;ldquo;just a bunch of routers&amp;rdquo; than &amp;ldquo;just a bunch of tubes&amp;rdquo;. These routers similarly hold routing tables that tell traffic where to go.&lt;/p&gt;
+&lt;p&gt;So when you send traffic to that Hetzner IP address, your home router will send it to your ISPs router which will then send it to another router which will the&amp;hellip; I think you get the idea. We can even see this semi-visually with tools like &lt;code&gt;traceroute&lt;/code&gt; or &lt;code&gt;mtr&lt;/code&gt;:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;kjartan@fenrir:~$ mtr -4 -w hetzner.com
+Start: 2024-05-02T00:52:02+0000
+HOST: fenrir                             Loss%   Snt   Last   Avg StDev
+  1.|-- _gateway                          0.0%    10    0.5   0.4   0.1
+  2.|-- 85-220-0-1.dsl.dynamic.simnet.is  0.0%    10    1.5   2.5   0.8
+  3.|-- siminn-linx-gw-1.isholf.is        0.0%    10   41.0  40.9   0.6
+  4.|-- ???                              100.0    10    0.0   0.0   0.0
+  5.|-- core6.par.hetzner.com             0.0%    10   55.4  55.4   0.8
+  6.|-- core11.nbg1.hetzner.com           0.0%    10   57.4  57.1   1.3
+  7.|-- ???                              100.0    10    0.0   0.0   0.0
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Here I am &amp;ldquo;tracing the route&amp;rdquo; to &lt;code&gt;hetzner.com&lt;/code&gt;. As you can see the first hop, labeled &lt;code&gt;1&lt;/code&gt;, is my home router. Hop &lt;code&gt;2&lt;/code&gt; is my ISPs router, so is &lt;code&gt;3&lt;/code&gt; only in London this time. Hop &lt;code&gt;4&lt;/code&gt; we don&amp;rsquo;t know what is but hops &lt;code&gt;5&lt;/code&gt; and &lt;code&gt;6&lt;/code&gt; are Hetzner&amp;rsquo;s. But&amp;hellip; how does this then work??? There&amp;rsquo;s no way Hetzner and my ISPs are good enough friends to be manually configuring routes to each other&amp;hellip;&lt;/p&gt;
+&lt;h1 id=&#34;border-gateway-protocol&#34;&gt;Border Gateway Protocol&lt;/h1&gt;
+&lt;p&gt;Border Gateway Protocol, BGP, is the glue of the internet backbone. It is how the networks we spent so long talking about actually do this &amp;ldquo;routing&amp;rdquo; between each other.&lt;/p&gt;
+&lt;p&gt;It&amp;rsquo;s quite simple for what it does. Two routers, directly connected with each other, are configured to establish a &amp;ldquo;BGP session&amp;rdquo; between themselves. This just a fancy name for a TCP socket with some &lt;em&gt;very useful (critical)&lt;/em&gt; safety features that make sure the other router (&amp;ldquo;neighbor&amp;rdquo;) hasn&amp;rsquo;t died or disconnected.&lt;/p&gt;
+&lt;p&gt;Through this socket these routers will send each other the routes they wish to &amp;ldquo;announce&amp;rdquo;. When either router receives a route from the other it decides if it wants to accept it and insert it into its routing table or not. Famously, this has caused &lt;a href=&#34;https://www.ripe.net/publications/news/youtube-hijacking-a-ripe-ncc-ris-case-study/&#34;&gt;massive problems&lt;/a&gt; before.&lt;/p&gt;
+&lt;p&gt;What truly makes everything work, though, is the transit networks we discussed above. &lt;em&gt;Obviously&lt;/em&gt; not every AS (&amp;ldquo;autonomous system&amp;rdquo; aka. &amp;ldquo;network&amp;rdquo;) can connect with every other AS - it&amp;rsquo;d be impractical, expensive, and messy. So what our dear ISPs (and content networks too!) do is&amp;hellip; buy &lt;em&gt;their&lt;/em&gt; internet from&amp;hellip; another ISP?&lt;/p&gt;
+&lt;p&gt;It sounds confusing and silly at first but in the context of just &amp;ldquo;exchanging routes&amp;rdquo; it makes a lot of sense. These &amp;ldquo;transit networks&amp;rdquo; (or &amp;ldquo;ISPs for ISPs&amp;rdquo;) will do all the &amp;lsquo;connecting with other networks&amp;rsquo; business &lt;em&gt;for us&lt;/em&gt; and then basically &amp;lsquo;rent the routes&amp;rsquo; they receive out to us. In technical terms they take the routes they accept from a peer and announce them to all other peers and customers.&lt;/p&gt;
+&lt;p&gt;Of course, the actual value of this service comes from the fact that these networks maintain high capacity, redundant connections between places on behalf of the smaller guys. The cost is paid up by the purchasers of the service (ISPs) and a profit is made from marking the price up slightly (or not so slightly, &lt;del&gt;shoutout AS3320&lt;/del&gt;).&lt;/p&gt;
+&lt;p&gt;It&amp;rsquo;s also worth mentioning that BGP identifies networks by an &amp;ldquo;autonomous system number&amp;rdquo; (&amp;ldquo;ASN&amp;rdquo;). They start with &lt;code&gt;AS&lt;/code&gt; followed by up to ten digits. Though these days we only ever see one to six digits. This is why this &amp;ldquo;blog&amp;rdquo; is called &lt;code&gt;AS51019&lt;/code&gt;, it&amp;rsquo;s my ASN.&lt;/p&gt;
+&lt;p&gt;Indeed, if we re-run our &lt;code&gt;mtr&lt;/code&gt; from above with the &lt;code&gt;-z&lt;/code&gt; flag we can see the ASNs each router belongs to:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;kjartan@fenrir:~$ mtr -4 -zw hetzner.com
+Start: 2024-05-02T01:03:49+0000
+HOST: fenrir                                    Loss%   Snt   Last   Avg StDev
+  1. AS???    _gateway                           0.0%    10    0.5   0.4   0.1
+  2. AS6677   85-220-0-1.dsl.dynamic.simnet.is   0.0%    10    2.3   2.1   0.7
+  3. AS???    siminn-linx-gw-1.isholf.is         0.0%    10   41.5  40.9   0.8
+  4. AS???    ???                               100.0    10    0.0   0.0   0.0
+  5. AS24940  core6.par.hetzner.com              0.0%    10   55.7  55.7   0.7
+  6. AS24940  core11.nbg1.hetzner.com            0.0%    10   57.5  56.8   0.6
+  7. AS???    ???                               100.0    10    0.0   0.0   0.0
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;code&gt;AS6677&lt;/code&gt; is my current ISP; &lt;code&gt;AS24940&lt;/code&gt; is Hetzner. &lt;code&gt;AS???&lt;/code&gt; is, of course, simply an AS we can&amp;rsquo;t identify (usually because &lt;em&gt;some&lt;/em&gt; assholes block ICMP).&lt;/p&gt;
+&lt;p&gt;Similarly, we can see a transit network in a traceroute like this by tracing the route to something e.g. on another continent:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;kjartan@fenrir:~$ mtr -4 -zw 64.187.208.1
+Start: 2024-05-02T01:26:51+0000
+HOST: fenrir                                       Loss%   Snt   Last   Avg StDev
+  1. AS???    _gateway                              0.0%    10    0.4   0.4   0.1
+  2. AS6677   85-220-0-1.dsl.dynamic.simnet.is      0.0%    10    2.1   2.4   0.8
+  3. AS6677   hu0-0-40.db2.dub.ie.ip.siminn.is      0.0%    10   24.9  25.1   0.6
+  4. AS2128   10ge16-1.core1.dub1.he.net           10.0%    10   25.4  25.1   0.9
+  5. AS6939   port-channel4.core2.nyc5.he.net       0.0%    10  102.4 102.0   1.4
+  6. AS6939   port-channel8.core2.nyc4.he.net      90.0%    10  105.3 105.3   0.0
+  7. AS6939   port-channel18.core3.chi1.he.net     80.0%    10  121.1 122.1   1.4
+  8. AS6939   port-channel1.core2.chi1.he.net      80.0%    10  117.2 116.5   1.1
+  9. AS6939   port-channel18.core2.sea1.he.net     20.0%    10  153.7 153.5   2.4
+ 10. AS1299   doof-ic-375811.ip.twelve99-cust.net   0.0%    10  150.5 150.8   0.7
+ 11. AS47689  r1-sea-a.as47689.net                  0.0%    10  151.5 151.4   0.7
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;code&gt;AS6939&lt;/code&gt;, Hurricane Electric of the USA, is a widely known transit network. But oh look! There&amp;rsquo;s another! &lt;code&gt;AS1299&lt;/code&gt;, Arelion of Sweden, sits between &lt;code&gt;AS6939&lt;/code&gt; and &lt;code&gt;AS47689&lt;/code&gt; (shoutout Wes!). Arelion happens to be the 2nd-largest transit network in the world as measured by CAIDA AS Rank.&lt;/p&gt;
+&lt;h1 id=&#34;in-summary&#34;&gt;In summary&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;The internet is &amp;ldquo;just a bunch of tubes&amp;rdquo; between &amp;ldquo;just a bunch of routers&amp;rdquo;.&lt;/li&gt;
+&lt;li&gt;Routers are computers that tell traffic entering through one port to exit through another, based on routing tables.&lt;/li&gt;
+&lt;li&gt;Routing tables are tables of routes. Routes are &amp;ldquo;prefixes&amp;rdquo; to IP addresses. More specific routes take preference over less specific ones.&lt;/li&gt;
+&lt;li&gt;Your home router has a static routing table. It sends all traffic to your ISP.&lt;/li&gt;
+&lt;li&gt;ISPs use Border Gateway Protocol to exchange routing information.&lt;/li&gt;
+&lt;li&gt;When ISPs can&amp;rsquo;t connect to a network on their own they rely on another ISP. An ISP for your ISP. ISPception. They&amp;rsquo;re called &amp;ldquo;transit networks&amp;rdquo; or &amp;ldquo;carriers&amp;rdquo; because they &amp;ldquo;transit&amp;rdquo; or &amp;ldquo;carry&amp;rdquo; traffic across their network.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&#34;further-reading&#34;&gt;Further reading&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/Peering&#34;&gt;Peering&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/Internet_exchange_point&#34;&gt;Internet exchange points&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/Autonomous_system_(Internet)&#34;&gt;Autonomous systems&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/IP_address&#34;&gt;IP addresses&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/IP_routing&#34;&gt;IP routing&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/Tier_1_network&#34;&gt;Tier 1 networks&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&#34;other-resources&#34;&gt;Other resources&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://bgp.tools/&#34;&gt;Explore the internet ecosystem&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://discord.gg/ipv6&#34;&gt;&amp;ldquo;Networking: IPv6&amp;rdquo; Discord server&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://discord.gg/Q3tZVbJYXH&#34;&gt;&amp;ldquo;the nettwork&amp;rdquo; Discord server&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&#34;questionscomments&#34;&gt;Questions/comments&lt;/h1&gt;
+&lt;p&gt;If you&amp;rsquo;d like to ask me something - perhaps inquiries related to the post rather than tech support on BGP etc. ;) - or have a comment I&amp;rsquo;d be happy chat via &lt;a href=&#34;mailto:kjartann@kjartann.is&#34;&gt;kjartann@kjartann.is&lt;/a&gt;.&lt;/p&gt;
+&lt;img src=&#34;http://localhost:1313/owiehappy.gif&#34; alt=&#34;:owiehappy: emoji&#34; width=&#34;48&#34; /&gt;
+</content>
+    </item>
+    
+  </channel>
+</rss>

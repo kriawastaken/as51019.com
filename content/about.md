@@ -1,7 +1,7 @@
 +++
 title = "About"
 date = 2024-05-01T21:42:06Z
-author = "Kjartan Hrafnkelsson"
+author = "Kría Elínarbur"
 +++
 
 AS51019 is the autonomous system representing a research network operated from Reykjavík, the capital of Iceland.
@@ -12,6 +12,6 @@ AS51019 is not a "backbone" and does not have one. Any traffic carried directly 
 
 If you are here because you are receiving or have received either harmful or suspicious looking traffic from AS51019, contact [abuse@as51019.com](mailto:abuse@as51019.com), your case will be reviewed thoroughly and happily resolved 😺
 
-If you are impressed, check out some [more cool sh#t](https://kjartann.is/).
+If you are impressed, check out some [more cool stuff](https://kria.se/).
 
 <img src="/owiehappy.gif" alt=":owiehappy: emoji" width="48" />

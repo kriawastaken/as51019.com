@@ -1,0 +1,131 @@
+# Shamelessly stolen from $employer
+
+Sitemap: https://as51019.com/sitemap.xml
+
+# Allowed cralwers:
+
+# Archive.org 
+User-Agent: ArchiveBot
+Allow: *
+Crawl-Delay: 4
+
+# Panascais search
+User-Agent: Panascais-Search-Bot
+Allow: *
+
+# Google 
+User-Agent: Googlebot
+User-Agent: Googlebot-Image
+User-Agent: Googlebot-News
+User-Agent: Googlebot-Video
+User-Agent: Googlebot-Mobile
+User-Agent: Google-InspectionTool
+User-Agent: Storebot-Google
+Allow: *
+Crawl-Delay: 1
+
+# Bing 
+User-Agent: Bingbot
+Allow: *
+Crawl-Delay: 1
+
+# Yahoo! 
+User-Agent: Slurp
+Allow: *
+Crawl-Delay: 1
+
+# DuckDuckGo 
+User-Agent: DuckDuckBot
+Allow: *
+Crawl-Delay: 1
+
+# Yandex 
+User-Agent: YandexBot
+Allow: *
+Crawl-Delay: 1
+
+# Baidu 
+User-Agent: Baiduspider
+Allow: *
+Crawl-Delay: 4
+
+# Naver 
+User-Agent: Yeti
+Allow: *
+Crawl-Delay: 4
+
+# Qwant 
+User-Agent: Qwantify
+Allow: *
+Crawl-Delay: 4
+
+# Ecosia 
+User-Agent: EcosiaBot
+Allow: *
+Crawl-Delay: 4
+
+# Startpage 
+User-Agent: StartpageBot
+Allow: *
+Crawl-Delay: 4
+
+# Searx 
+User-Agent: searx
+Allow: *
+Crawl-Delay: 4
+
+# Kagi 
+User-Agent: KagiBot
+Allow: *
+Crawl-Delay: 4
+
+# Disallowed cralwers:
+
+# Google extended
+User-Agent: Google-Extended
+Disallow: /
+
+# Common crawl
+User-Agent: CCBot
+Disallow: /
+
+# OpenAI 
+User-Agent: GPTBot
+User-Agent: ChatGPT-User
+Disallow: /
+
+# Perplexity AI 
+User-Agent: PerplexityBot
+Disallow: /
+
+# Majestic 12 SEO 
+User-Agent: MJ12bot
+Disallow: /
+
+# Wankers of the internet
+
+User-Agent: WebReaper
+Disallow: /
+
+User-Agent: WebCopier
+Disallow: /
+
+User-Agent: Offline Explorer
+Disallow: /
+
+User-Agent: HTTrack
+Disallow: /
+
+User-Agent: Microsoft.URL.Control
+Disallow: /
+
+User-Agent: EmailCollector
+Disallow: /
+
+User-Agent: penthesilea
+Disallow: /
+
+# Fallback
+
+User-Agent: *
+Allow: *

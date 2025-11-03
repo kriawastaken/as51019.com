@@ -1,7 +1,7 @@
 +++
 title = "Credits"
 date = 2024-05-02T18:22:40Z
-author = "Kjartan Hrafnkelsson"
+author = "Kría Elínarbur"
 +++
 
 * Powered by [Hugo](https://gohugo.io)

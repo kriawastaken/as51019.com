@@ -7,26 +7,26 @@ author = "Admin"
 # Legal contact in EU/EEA
 
 ```
-Kjartan Hrafnkelsson
-Laugalæk 56
-105 Reykjavík
+Kría Elínarbur
+c/o Atlantic Crossing Limited
+Neshaga 16
+107 Reykjavík
 Iceland
 
-+354 784 0020
-alvarlegt@kjartann.is
++354 539 5255
+e.legal@kria.tel
 ```
 
 # Legal contact in all other regions
 
 ```
-Octan Ltd.
-BPM 332638
-372 Old Street
-London EC1V 9AU
+Atlantic Crossing Limited
+45 Albemarle Street
+Mayfair, London W1S 4JL
 United Kingdom
 
 +44 7389 647114
-portals@octan.systems
+e.portals@atlanticcrossing.co.uk
 № 15654145
 ```
 

@@ -1,0 +1,41 @@
+# AS51019 published geo-IP information
+
+# gblcy0
+2001:67c:bdc:200::/56,GB,GB-TWH,London,E16QR # gblcy0 ipv6
+160.202.134.1/32,GB,GB-TWH,London,E16QR # lcy-gw
+
+# defra0
+2001:67c:bdc::/56,DE,DE-HE,Frankfurt,60489 # defra0 ipv6
+160.202.134.2/32,DE,DE-HE,Frankfurt,60489 # fra-gw
+
+# cayyz0
+2001:67c:bdc:300::/56,CA,CA-ON,Toronto,M5A0G7 # cayyz0 ipv6
+160.202.134.3/32,CA,CA-ON,Toronto,M5A0G7 # yyz-gw
+
+# ussjc0
+2001:67c:bdc:400::/56,US,US-CA,Fremont,94539-7654 # ussjc0 ipv6
+160.202.134.4/32,US,US-CA,Fremont,94539-7654 # sjc-gw
+
+# usiad0
+2001:67c:bdc:600::/56,US,US-VA,Ashburn,20147-6205 # usiad0 ipv6
+160.202.134.5/32,US,US-VA,Ashburn,20147-6205 # iad-gw
+
+# nlams0
+160.202.134.6/32,NL,NL-NH,Amsterdam,1098XG # ams-gw
+
+# iedub0
+160.202.134.7/32,IE,IE-D,Dublin, # dub-gw
+
+# frcdg0
+160.202.134.8/32,FR,FR-HDF,Sainghin-en-Melantois,59262 # cdg-gw
+
+# searl0
+160.202.134.9/32,SE,SE-AB,Kista,16440 # arl-gw
+
+# isrey0
+2001:67c:bdc:1a00::/56,IS,IS-RKV,Reykjavik,101 # isrey0 ipv6
+160.202.134.10/32,IS,IS-RKV,Reykjavik,101 # rvk-gw
+160.202.134.128/28,IS,IS-RKV,Reykjavik,101 # servers DMZ isrey0
+
+# isrey1
+160.202.134.144/28,IS,IS-RKV,Reykjavik,110 # Spaugur ehf. office DMZ isrey1

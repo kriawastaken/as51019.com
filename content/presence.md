@@ -1,7 +1,7 @@
 +++
 title = "International points of presence"
 date = 2024-05-01T21:51:56Z
-author = "Kjartan Hrafnkelsson"
+author = "Kría Elínarbur"
 +++
 
 # Frankfurt 🇩🇪
@@ -10,9 +10,10 @@ Prefixes originated:
 
 | Prefix              | Description                      |
 |---------------------|----------------------------------|
-| 2001:67c:bdc::/48   | Network edge                     |
-| 2a05:dfc1:ff00::/48 | Frankfurt site-local prefix      |
-| 2a05:dfc1:ffea::/48 | Managed customer v6-only anycast |
+| 2001:67c:bdc::/48   | Global aggregation               |
+| 2a05:dfc1:ffea::/48 | Managed anycast (KTT)            |
+| 160.202.134.0/24    | Global aggregation               |
+| 194.68.14.0/24      | Iceland aggregation              |
 
 IXPs
 
@@ -20,7 +21,6 @@ IXPs
 |-----------------|---------|---------------|--------------------------|
 | LocIX Frankfurt | 1Gbps   | Established   | Connected                |
 | FogIXP          | 1Gbps   | Established   | Connected                |
-| NL-ix           | 100Mbps | Disconnected  | Disconnected temporarily |
 
 Transits
 
@@ -28,6 +28,7 @@ Transits
 |---------|--------------------|---------|------------------------|-----------|
 | AS34549 | meerfarbig         | 1Gbps   | LocIX IX fabric        | Connected |
 | AS6939  | Hurricane Electric | 1Gbps   | LocIX IX fabric        | Connected |
+| AS34927 | iFog GmbH          | 1Gbps   | VLAN                   | Connected |
 
 # Amsterdam 🇳🇱
 
@@ -35,9 +36,10 @@ Prefixes originated:
 
 | Prefix              | Description                      |
 |---------------------|----------------------------------|
-| 2001:67c:bdc::/48   | Network edge                     |
-| 2a05:dfc1:ff01::/48 | Amsterdam site-local prefix      |
-| 2a05:dfc1:ffea::/48 | Managed customer v6-only anycast |
+| 2001:67c:bdc::/48   | Global aggregation               |
+| 2a05:dfc1:ffea::/48 | Managed anycast (KTT)            |
+| 160.202.134.0/24    | Global aggregation               |
+| 194.68.14.0/24      | Iceland aggregation              |
 
 IXPs
 
@@ -56,9 +58,10 @@ Prefixes originated:
 
 | Prefix              | Description                      |
 |---------------------|----------------------------------|
-| 2001:67c:bdc::/48   | Network edge                     |
-| 2a05:dfc1:ff02::/48 | Toronto site-local prefix        |
-| 2a05:dfc1:ffea::/48 | Managed customer v6-only anycast |
+| 2001:67c:bdc::/48   | Global aggregation               |
+| 2a05:dfc1:ffea::/48 | Managed anycast (KTT)            |
+| 160.202.134.0/24    | Global aggregation               |
+| 194.68.14.0/24      | Iceland aggregation              |
 
 IXPs
 
@@ -78,9 +81,10 @@ Prefixes originated:
 
 | Prefix              | Description                      |
 |---------------------|----------------------------------|
-| 2001:67c:bdc::/48   | Network edge                     |
-| 2a05:dfc1:ff03::/48 | London site-local prefix         |
-| 2a05:dfc1:ffea::/48 | Managed customer v6-only anycast |
+| 2001:67c:bdc::/48   | Global aggregation               |
+| 2a05:dfc1:ffea::/48 | Managed anycast (KTT)            |
+| 160.202.134.0/24    | Global aggregation               |
+| 194.68.14.0/24      | Iceland aggregation              |
 
 IXPs
 
@@ -90,30 +94,12 @@ IXPs
 
 Transits
 
-| ASN     | Carrier            | Speed   | Interconnection method | Status    |
-|---------|--------------------|---------|------------------------|-----------|
-| AS6939  | Hurricane Electric | 250Mbps | LONAP IX fabric        | Connected |
-
-# Sydney 🇦🇺
-
-Prefixes originated:
-
-| Prefix              | Description                      |
-|---------------------|----------------------------------|
-| 2001:67c:bdc::/48   | Network edge                     |
-| 2a05:dfc1:ff04::/48 | Sydney site-local prefix         |
-| 2a05:dfc1:ffea::/48 | Managed customer v6-only anycast |
-
-IXPs
-
-| IXP   | Speed   | Route servers | Status    |
-|-------|---------|---------------|-----------|
-
-Transits
-
-| ASN     | Carrier             | Speed | Interconnection method | Status    |
-|---------|---------------------|-------|------------------------|-----------|
-| AS37988 | Alpha Layer Pty Ltd | 2Gbps | Provider VLAN          | Connected |
+| ASN      | Carrier                    | Speed   | Interconnection method | Status    |
+|----------|----------------------------|---------|------------------------|-----------|
+| AS207841 | Inferno Communications Ltd | 1Gbps   | VLAN                   | Connected |
+| AS6939   | Hurricane Electric         | 250Mbps | LONAP IX fabric        | Connected |
+| AS52025  | ParadoxNetworks Limited    | 250Mbps | LONAP IX fabric        | Connected |
+| AS34927  | iFog GmbH.                 | 250Mbps | LONAP IX fabric        | Connected |
 
 # Fremont 🇺🇸
 
@@ -121,9 +107,10 @@ Prefixes originated:
 
 | Prefix              | Description                      |
 |---------------------|----------------------------------|
-| 2001:67c:bdc::/48   | Network edge                     |
-| 2a05:dfc1:ff05::/48 | Fremont site-local prefix        |
-| 2a05:dfc1:ffea::/48 | Managed customer v6-only anycast |
+| 2001:67c:bdc::/48   | Global aggregation               |
+| 2a05:dfc1:ffea::/48 | Managed anycast (KTT)            |
+| 160.202.134.0/24    | Global aggregation               |
+| 194.68.14.0/24      | Iceland aggregation              |
 
 IXPs
 
@@ -142,16 +129,18 @@ Prefixes originated:
 
 | Prefix              | Description                      |
 |---------------------|----------------------------------|
-| 2001:67c:bdc::/48   | Network edge                     |
-| 2a05:dfc1:ffea::/48 | Managed customer v6-only anycast |
+| 2001:67c:bdc::/48   | Global aggregation               |
+| 2a05:dfc1:ffea::/48 | Managed anycast (KTT)            |
+| 160.202.134.0/24    | Global aggregation               |
+| 194.68.14.0/24      | Iceland aggregation              |
 
 IXPs
 
 | IXP   | Speed  | Route servers | Status       |
 |-------|--------|---------------|--------------|
-| REMIX | 25Gbps | Not available | Disconnected |
 
 Transits
 
-| ASN     | Carrier | Speed   | Interconnection method | Status |
-|---------|---------|---------|------------------------|--------|
+| ASN      | Carrier      | Speed  | Interconnection method | Status    |
+|----------|--------------|--------|------------------------|-----------|
+| AS215823 | Spaugur ehf. | 10Gbps | Cross connect          | Connected |

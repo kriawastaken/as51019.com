@@ -1,8 +1,8 @@
 +++
 title = "Quick intro to how the internet really works"
 date = "2024-05-02T00:10:04Z"
-author = "Kjartan Hrafnkelsson"
-authorTwitter = "kjartanhr" #do not include @
+author = "Kría Elínarbur"
+authorTwitter = "kriawastaken" #do not include @
 cover = "/posts/intro-internet/IRIS-link_NORDUnet.png"
 tags = ["internet", "bgp", "routing"]
 keywords = ["bgp", "internet", "routing", "submarine cables"]

@@ -1,7 +1,7 @@
 +++
 title = "Communities"
 date = 2024-05-01T21:51:51Z
-author = "Kjartan Hrafnkelsson"
+author = "Kría Elínarbur"
 +++
 
 # Community structure
@@ -27,7 +27,6 @@ x = location ID.
 |-------------|---------------------------------------|
 | 51019, 006  | Learnt over LocIX Frankfurt IX fabric |
 | 51019, 007  | Learnt over FogIXP IX fabric          |
-| 51019, 008  | Learnt over NL-ix IX fabric           |
 
 x = 0
 
@@ -62,27 +61,3 @@ x = 3
 | 51019, 406  | Learnt over FREMIX IX fabric |
 
 x = 4
-
-# Informational BGP communities tagged in Reykjavík 🇮🇸
-
-|  Community  | Description                 |
-|-------------|-----------------------------|
-| 51019, 506  | Learnt over REMIX IX fabric |
-
-x = 5
-
-# Informational BGP communities tagged in Coventry 🇬🇧
-
-|  Community  | Description                 |
-|-------------|-----------------------------|
-| 51019, 609  | Only redistribute to FIB    |
-
-x = 6
-
-# Informational BGP communities tagged in Ashburn 🇺🇸
-
-|  Community  | Description                |
-|-------------|----------------------------|
-| 51019, 606  | Learnt over NVIX IX fabric |
-
-x = 7

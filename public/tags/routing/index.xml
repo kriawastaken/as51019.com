@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Routing on AS51019</title>
+    <link>http://localhost:1313/tags/routing/</link>
+    <description>Recent content in Routing on AS51019</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Thu, 02 May 2024 00:10:04 +0000</lastBuildDate><atom:link href="http://localhost:1313/tags/routing/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Quick intro to how the internet really works</title>
+      <link>http://localhost:1313/posts/intro-internet/</link>
+      <pubDate>Thu, 02 May 2024 00:10:04 +0000</pubDate>
+      
+      <guid>http://localhost:1313/posts/intro-internet/</guid>
+      <description>&lt;p&gt;Ever since I can remember I have always had some curiosity about the internet. It began with a desire to create websites. Then a desire to publish those websites. Then a desire to build apps out from those websites. And so on.&lt;/p&gt;
+&lt;p&gt;Eventually I was deep into application development, having started with PHP, and eventually settling in the JavaScript/TypeScript ecosystem. Publishing (hosting) those applications is what led me to learning about Linux, networking, and a bunch of other &amp;ldquo;sysadmin-y&amp;rdquo; stuff. This is where a new curiosity formed: &lt;strong&gt;how does the internet work?&lt;/strong&gt;&lt;/p&gt;</description>
+      <content>&lt;p&gt;Ever since I can remember I have always had some curiosity about the internet. It began with a desire to create websites. Then a desire to publish those websites. Then a desire to build apps out from those websites. And so on.&lt;/p&gt;
+&lt;p&gt;Eventually I was deep into application development, having started with PHP, and eventually settling in the JavaScript/TypeScript ecosystem. Publishing (hosting) those applications is what led me to learning about Linux, networking, and a bunch of other &amp;ldquo;sysadmin-y&amp;rdquo; stuff. This is where a new curiosity formed: &lt;strong&gt;how does the internet work?&lt;/strong&gt;&lt;/p&gt;
+&lt;h1 id=&#34;how-does-the-internet-work&#34;&gt;How does the internet work?&lt;/h1&gt;
+&lt;p&gt;Whenever I asked this question - online or in real life - I never felt satisfied with the answer. Sometimes I&amp;rsquo;d receive more information than other times, but never did it go any deeper than merely &amp;ldquo;the internet is like a series of tubes&amp;rdquo;. This isn&amp;rsquo;t incorrect, those &amp;ldquo;tubes&amp;rdquo; would be subsea and landline fibre routes, but it isn&amp;rsquo;t very helpful either. Someone who wants to dive deeper won&amp;rsquo;t feel very satisfied, like how I wasn&amp;rsquo;t, hearing the same information repeatedly. However, this is useful foundational knowledge.&lt;/p&gt;
+&lt;p&gt;When people repeat this phrase &amp;ldquo;the internet is like a series of tubes&amp;rdquo; they are referring to, as I mentioned, the subsea and landline fibre routes that carry internet traffic between places. But it&amp;rsquo;s more complicated than that.&lt;/p&gt;
+&lt;p&gt;To develop an understanding of how this seemingly abstract network of cables forms the internet, it is best to scratch the idea of an &amp;ldquo;internet&amp;rdquo; at all. Rather, the internet is actually a bunch of smaller networks all connected together in one way or another. These are companies - big and small - ranging from large ISPs like France&amp;rsquo;s Orange to tiny content networks like Panascais back to large content networks like Google.&lt;/p&gt;
+&lt;p&gt;These smaller networks are connected to each other via the fibre mentioned above. Sometimes they&amp;rsquo;ll be directly connected together, usually because it saves money. Most of the time they&amp;rsquo;ll be connected through another network called a &amp;ldquo;transit provider&amp;rdquo; or a &amp;ldquo;carrier&amp;rdquo;. We call them that because traffic on their network isn&amp;rsquo;t actually originating or terminating from or to them. Rather it&amp;rsquo;s crossing (&amp;ldquo;transiting&amp;rdquo;) their network.&lt;/p&gt;
+&lt;p&gt;But ok&amp;hellip; back to the question I had as a kid&amp;hellip; how does the internet &lt;em&gt;really&lt;/em&gt; work? Like, how does my computer know the right cable to send packets through if I ping a Hetzner IP address???&lt;/p&gt;
+&lt;h1 id=&#34;routing&#34;&gt;Routing&lt;/h1&gt;
+&lt;p&gt;Turns out the answer to this question is actually hidden behind another question - what is and how does routing work?&lt;/p&gt;
+&lt;p&gt;To put it simply, routing is like driving a car. You may intuitively know the route from your house to your closest &amp;ldquo;multi-lane road&amp;rdquo;™, but you might need some guidance getting to a beach you haven&amp;rsquo;t been to before.&lt;/p&gt;
+&lt;p&gt;In this analogy, the way to the big wide multi-lane road might be like the way from your device to your home router, and from your router to your ISPs router. The secret here really are these boxes we call &amp;ldquo;routers&amp;rdquo;. They are really just computers, but they - somehow - know how to receive traffic on one network port (like an ethernet port, that is) and send it out another.&lt;/p&gt;
+&lt;p&gt;To do this routers keep a special table in their system called a &amp;ldquo;routing table&amp;rdquo;. It is a table of &amp;ldquo;routes&amp;rdquo;. Routes are also called &amp;ldquo;prefixes&amp;rdquo; in networking spaces as they used to work on a prefix based system. If an IP address started with &lt;code&gt;38&lt;/code&gt; you would know to send it to Cogent (not the waste management company). Today this works slightly differently (Google &amp;ldquo;CIDR&amp;rdquo; if interested) but the principle is the same and the old model is easier to explain so I&amp;rsquo;ll stick to that.&lt;/p&gt;
+&lt;p&gt;Now, your home router has a very simple routing table. Likely it has a route for your home network, commonly prefixed with &lt;code&gt;192.168.x&lt;/code&gt;, and a &amp;ldquo;default&amp;rdquo; route that sends all traffic out the port connected to your ISP. This is your &amp;ldquo;internet connection&amp;rdquo;.&lt;/p&gt;
+&lt;p&gt;A core element of this system is specificity. Your router will prefer routes that are &lt;em&gt;more specific&lt;/em&gt;. A route for the prefix &lt;code&gt;192.168.1 via port0&lt;/code&gt; will take priority over a route for &lt;code&gt;192.168 via port1&lt;/code&gt;, if the destination address begins with &lt;code&gt;192.168.1&lt;/code&gt;. This way you can target traffic bound to addresses with a certain prefix but leave other traffic within the same &amp;ldquo;parent prefix&amp;rdquo; alone. This is how your home router can communicate with your device despite having a route forwarding all traffic to your ISP.&lt;/p&gt;
+&lt;p&gt;Lastly, your ISP also has some routers. In fact everyone on the internet has some routers. Really the internet is closer to &amp;ldquo;just a bunch of routers&amp;rdquo; than &amp;ldquo;just a bunch of tubes&amp;rdquo;. These routers similarly hold routing tables that tell traffic where to go.&lt;/p&gt;
+&lt;p&gt;So when you send traffic to that Hetzner IP address, your home router will send it to your ISPs router which will then send it to another router which will the&amp;hellip; I think you get the idea. We can even see this semi-visually with tools like &lt;code&gt;traceroute&lt;/code&gt; or &lt;code&gt;mtr&lt;/code&gt;:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;kjartan@fenrir:~$ mtr -4 -w hetzner.com
+Start: 2024-05-02T00:52:02+0000
+HOST: fenrir                             Loss%   Snt   Last   Avg StDev
+  1.|-- _gateway                          0.0%    10    0.5   0.4   0.1
+  2.|-- 85-220-0-1.dsl.dynamic.simnet.is  0.0%    10    1.5   2.5   0.8
+  3.|-- siminn-linx-gw-1.isholf.is        0.0%    10   41.0  40.9   0.6
+  4.|-- ???                              100.0    10    0.0   0.0   0.0
+  5.|-- core6.par.hetzner.com             0.0%    10   55.4  55.4   0.8
+  6.|-- core11.nbg1.hetzner.com           0.0%    10   57.4  57.1   1.3
+  7.|-- ???                              100.0    10    0.0   0.0   0.0
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Here I am &amp;ldquo;tracing the route&amp;rdquo; to &lt;code&gt;hetzner.com&lt;/code&gt;. As you can see the first hop, labeled &lt;code&gt;1&lt;/code&gt;, is my home router. Hop &lt;code&gt;2&lt;/code&gt; is my ISPs router, so is &lt;code&gt;3&lt;/code&gt; only in London this time. Hop &lt;code&gt;4&lt;/code&gt; we don&amp;rsquo;t know what is but hops &lt;code&gt;5&lt;/code&gt; and &lt;code&gt;6&lt;/code&gt; are Hetzner&amp;rsquo;s. But&amp;hellip; how does this then work??? There&amp;rsquo;s no way Hetzner and my ISPs are good enough friends to be manually configuring routes to each other&amp;hellip;&lt;/p&gt;
+&lt;h1 id=&#34;border-gateway-protocol&#34;&gt;Border Gateway Protocol&lt;/h1&gt;
+&lt;p&gt;Border Gateway Protocol, BGP, is the glue of the internet backbone. It is how the networks we spent so long talking about actually do this &amp;ldquo;routing&amp;rdquo; between each other.&lt;/p&gt;
+&lt;p&gt;It&amp;rsquo;s quite simple for what it does. Two routers, directly connected with each other, are configured to establish a &amp;ldquo;BGP session&amp;rdquo; between themselves. This just a fancy name for a TCP socket with some &lt;em&gt;very useful (critical)&lt;/em&gt; safety features that make sure the other router (&amp;ldquo;neighbor&amp;rdquo;) hasn&amp;rsquo;t died or disconnected.&lt;/p&gt;
+&lt;p&gt;Through this socket these routers will send each other the routes they wish to &amp;ldquo;announce&amp;rdquo;. When either router receives a route from the other it decides if it wants to accept it and insert it into its routing table or not. Famously, this has caused &lt;a href=&#34;https://www.ripe.net/publications/news/youtube-hijacking-a-ripe-ncc-ris-case-study/&#34;&gt;massive problems&lt;/a&gt; before.&lt;/p&gt;
+&lt;p&gt;What truly makes everything work, though, is the transit networks we discussed above. &lt;em&gt;Obviously&lt;/em&gt; not every AS (&amp;ldquo;autonomous system&amp;rdquo; aka. &amp;ldquo;network&amp;rdquo;) can connect with every other AS - it&amp;rsquo;d be impractical, expensive, and messy. So what our dear ISPs (and content networks too!) do is&amp;hellip; buy &lt;em&gt;their&lt;/em&gt; internet from&amp;hellip; another ISP?&lt;/p&gt;
+&lt;p&gt;It sounds confusing and silly at first but in the context of just &amp;ldquo;exchanging routes&amp;rdquo; it makes a lot of sense. These &amp;ldquo;transit networks&amp;rdquo; (or &amp;ldquo;ISPs for ISPs&amp;rdquo;) will do all the &amp;lsquo;connecting with other networks&amp;rsquo; business &lt;em&gt;for us&lt;/em&gt; and then basically &amp;lsquo;rent the routes&amp;rsquo; they receive out to us. In technical terms they take the routes they accept from a peer and announce them to all other peers and customers.&lt;/p&gt;
+&lt;p&gt;Of course, the actual value of this service comes from the fact that these networks maintain high capacity, redundant connections between places on behalf of the smaller guys. The cost is paid up by the purchasers of the service (ISPs) and a profit is made from marking the price up slightly (or not so slightly, &lt;del&gt;shoutout AS3320&lt;/del&gt;).&lt;/p&gt;
+&lt;p&gt;It&amp;rsquo;s also worth mentioning that BGP identifies networks by an &amp;ldquo;autonomous system number&amp;rdquo; (&amp;ldquo;ASN&amp;rdquo;). They start with &lt;code&gt;AS&lt;/code&gt; followed by up to ten digits. Though these days we only ever see one to six digits. This is why this &amp;ldquo;blog&amp;rdquo; is called &lt;code&gt;AS51019&lt;/code&gt;, it&amp;rsquo;s my ASN.&lt;/p&gt;
+&lt;p&gt;Indeed, if we re-run our &lt;code&gt;mtr&lt;/code&gt; from above with the &lt;code&gt;-z&lt;/code&gt; flag we can see the ASNs each router belongs to:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;kjartan@fenrir:~$ mtr -4 -zw hetzner.com
+Start: 2024-05-02T01:03:49+0000
+HOST: fenrir                                    Loss%   Snt   Last   Avg StDev
+  1. AS???    _gateway                           0.0%    10    0.5   0.4   0.1
+  2. AS6677   85-220-0-1.dsl.dynamic.simnet.is   0.0%    10    2.3   2.1   0.7
+  3. AS???    siminn-linx-gw-1.isholf.is         0.0%    10   41.5  40.9   0.8
+  4. AS???    ???                               100.0    10    0.0   0.0   0.0
+  5. AS24940  core6.par.hetzner.com              0.0%    10   55.7  55.7   0.7
+  6. AS24940  core11.nbg1.hetzner.com            0.0%    10   57.5  56.8   0.6
+  7. AS???    ???                               100.0    10    0.0   0.0   0.0
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;code&gt;AS6677&lt;/code&gt; is my current ISP; &lt;code&gt;AS24940&lt;/code&gt; is Hetzner. &lt;code&gt;AS???&lt;/code&gt; is, of course, simply an AS we can&amp;rsquo;t identify (usually because &lt;em&gt;some&lt;/em&gt; assholes block ICMP).&lt;/p&gt;
+&lt;p&gt;Similarly, we can see a transit network in a traceroute like this by tracing the route to something e.g. on another continent:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;kjartan@fenrir:~$ mtr -4 -zw 64.187.208.1
+Start: 2024-05-02T01:26:51+0000
+HOST: fenrir                                       Loss%   Snt   Last   Avg StDev
+  1. AS???    _gateway                              0.0%    10    0.4   0.4   0.1
+  2. AS6677   85-220-0-1.dsl.dynamic.simnet.is      0.0%    10    2.1   2.4   0.8
+  3. AS6677   hu0-0-40.db2.dub.ie.ip.siminn.is      0.0%    10   24.9  25.1   0.6
+  4. AS2128   10ge16-1.core1.dub1.he.net           10.0%    10   25.4  25.1   0.9
+  5. AS6939   port-channel4.core2.nyc5.he.net       0.0%    10  102.4 102.0   1.4
+  6. AS6939   port-channel8.core2.nyc4.he.net      90.0%    10  105.3 105.3   0.0
+  7. AS6939   port-channel18.core3.chi1.he.net     80.0%    10  121.1 122.1   1.4
+  8. AS6939   port-channel1.core2.chi1.he.net      80.0%    10  117.2 116.5   1.1
+  9. AS6939   port-channel18.core2.sea1.he.net     20.0%    10  153.7 153.5   2.4
+ 10. AS1299   doof-ic-375811.ip.twelve99-cust.net   0.0%    10  150.5 150.8   0.7
+ 11. AS47689  r1-sea-a.as47689.net                  0.0%    10  151.5 151.4   0.7
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;code&gt;AS6939&lt;/code&gt;, Hurricane Electric of the USA, is a widely known transit network. But oh look! There&amp;rsquo;s another! &lt;code&gt;AS1299&lt;/code&gt;, Arelion of Sweden, sits between &lt;code&gt;AS6939&lt;/code&gt; and &lt;code&gt;AS47689&lt;/code&gt; (shoutout Wes!). Arelion happens to be the 2nd-largest transit network in the world as measured by CAIDA AS Rank.&lt;/p&gt;
+&lt;h1 id=&#34;in-summary&#34;&gt;In summary&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;The internet is &amp;ldquo;just a bunch of tubes&amp;rdquo; between &amp;ldquo;just a bunch of routers&amp;rdquo;.&lt;/li&gt;
+&lt;li&gt;Routers are computers that tell traffic entering through one port to exit through another, based on routing tables.&lt;/li&gt;
+&lt;li&gt;Routing tables are tables of routes. Routes are &amp;ldquo;prefixes&amp;rdquo; to IP addresses. More specific routes take preference over less specific ones.&lt;/li&gt;
+&lt;li&gt;Your home router has a static routing table. It sends all traffic to your ISP.&lt;/li&gt;
+&lt;li&gt;ISPs use Border Gateway Protocol to exchange routing information.&lt;/li&gt;
+&lt;li&gt;When ISPs can&amp;rsquo;t connect to a network on their own they rely on another ISP. An ISP for your ISP. ISPception. They&amp;rsquo;re called &amp;ldquo;transit networks&amp;rdquo; or &amp;ldquo;carriers&amp;rdquo; because they &amp;ldquo;transit&amp;rdquo; or &amp;ldquo;carry&amp;rdquo; traffic across their network.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&#34;further-reading&#34;&gt;Further reading&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/Peering&#34;&gt;Peering&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/Internet_exchange_point&#34;&gt;Internet exchange points&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/Autonomous_system_(Internet)&#34;&gt;Autonomous systems&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/IP_address&#34;&gt;IP addresses&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/IP_routing&#34;&gt;IP routing&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/Tier_1_network&#34;&gt;Tier 1 networks&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&#34;other-resources&#34;&gt;Other resources&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://bgp.tools/&#34;&gt;Explore the internet ecosystem&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://discord.gg/ipv6&#34;&gt;&amp;ldquo;Networking: IPv6&amp;rdquo; Discord server&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://discord.gg/Q3tZVbJYXH&#34;&gt;&amp;ldquo;the nettwork&amp;rdquo; Discord server&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&#34;questionscomments&#34;&gt;Questions/comments&lt;/h1&gt;
+&lt;p&gt;If you&amp;rsquo;d like to ask me something - perhaps inquiries related to the post rather than tech support on BGP etc. ;) - or have a comment I&amp;rsquo;d be happy chat via &lt;a href=&#34;mailto:kjartann@kjartann.is&#34;&gt;kjartann@kjartann.is&lt;/a&gt;.&lt;/p&gt;
+&lt;img src=&#34;http://localhost:1313/owiehappy.gif&#34; alt=&#34;:owiehappy: emoji&#34; width=&#34;48&#34; /&gt;
+</content>
+    </item>
+    
+  </channel>
+</rss>
