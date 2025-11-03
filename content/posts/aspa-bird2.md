@@ -116,7 +116,7 @@ I'm sure this code could be improved for performance and efficiency - my online 
 
 # Generating the filter function
 
-I chose to write [a TypeScript program](https://github.com/kjartanhr/routinator-aspa-json-to-bird2) with Deno to achieve what I'd like to do here. Deno also conveniently allows you to "compile" (really it's just bundling) the program to a binary that can run portably, which is handy. Though the binary does end up being around 130MB in size. Yikes!
+I chose to write [a TypeScript program](https://github.com/kriawastaken/routinator-aspa-json-to-bird2) with Deno to achieve what I'd like to do here. Deno also conveniently allows you to "compile" (really it's just bundling) the program to a binary that can run portably, which is handy. Though the binary does end up being around 130MB in size. Yikes!
 
 The program's 100~ lines come mostly from error handling and CLI flag boilerplate. The actual logic is 14 lines consisting of a for loop with a nested one inside it:
 
@@ -180,7 +180,7 @@ However, to have some fun, we can just poke at the ASPA function and comment out
 
 I think this was a fun evening project. It didn't take too long and was pretty satisfying. It also taught me a bit about ASPA that I didn't know before.
 
-If you'd like to do this for yourself I'd like to reiterate that ASPA is an incredibly new and unapproved standard that will undoubtedly change. I wouldn't do this in production quite yet. Regardless I [published my program on GitHub](https://github.com/kjartanhr/routinator-aspa-json-to-bird2) and I encourage you, if you have any improvements, to make a pull request <img src="/owiehappy.png" alt=":owiehappy:" height="24" style="display:inline-block;margin-bottom:-8px;margin-left:-3px;" />
+If you'd like to do this for yourself I'd like to reiterate that ASPA is an incredibly new and unapproved standard that will undoubtedly change. I wouldn't do this in production quite yet. Regardless I [published my program on GitHub](https://github.com/kriawastaken/routinator-aspa-json-to-bird2) and I encourage you, if you have any improvements, to make a pull request <img src="/owiehappy.png" alt=":owiehappy:" height="24" style="display:inline-block;margin-bottom:-8px;margin-left:-3px;" />
 
 # Some references
 
@@ -189,6 +189,6 @@ If you'd like to do this for yourself I'd like to reiterate that ASPA is an incr
 
 # Questions/comments
 
-If you'd like to ask me something or have a comment I'd be happy chat via [kjartann@kjartann.is](mailto:kjartann@kjartann.is).
+If you'd like to ask me something or have a comment I'd be happy chat via [kria@kria.tel](mailto:kria@kria.tel).
 
 <img src="/owiehappy.gif" alt=":owiehappy: emoji" width="48" />

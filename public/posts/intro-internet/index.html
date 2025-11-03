@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+<head>
   
     <title>Quick intro to how the internet really works :: AS51019</title>
   
@@ -13,7 +13,7 @@ Eventually I was deep into application development, having started with PHP, and
 
   <meta name="robots" content="noodp" />
 
-<link rel="canonical" href="http://localhost:1313/posts/intro-internet/" />
+<link rel="canonical" href="https://as51019.com/posts/intro-internet/" />
 
 
 
@@ -25,7 +25,7 @@ Eventually I was deep into application development, having started with PHP, and
   
   
   
-  <link rel="stylesheet" href="http://localhost:1313/styles.css">
+  <link rel="stylesheet" href="https://as51019.com/styles.css">
 
 
 
@@ -33,8 +33,8 @@ Eventually I was deep into application development, having started with PHP, and
 
 
 
-  <link rel="shortcut icon" href="http://localhost:1313/img/theme-colors/blue.png">
-  <link rel="apple-touch-icon" href="http://localhost:1313/img/theme-colors/blue.png">
+  <link rel="shortcut icon" href="https://as51019.com/img/theme-colors/blue.png">
+  <link rel="apple-touch-icon" href="https://as51019.com/img/theme-colors/blue.png">
 
 
 
@@ -43,7 +43,7 @@ Eventually I was deep into application development, having started with PHP, and
   
     <meta name="twitter:site" content="" />
   
-    <meta name="twitter:creator" content="kjartanhr" />
+    <meta name="twitter:creator" content="kriawastaken" />
 
 
 
@@ -53,12 +53,12 @@ Eventually I was deep into application development, having started with PHP, and
 <meta property="og:description" content="Ever since I can remember I have always had some curiosity about the internet. It began with a desire to create websites. Then a desire to publish those websites. Then a desire to build apps out from those websites. And so on.
 Eventually I was deep into application development, having started with PHP, and eventually settling in the JavaScript/TypeScript ecosystem. Publishing (hosting) those applications is what led me to learning about Linux, networking, and a bunch of other &ldquo;sysadmin-y&rdquo; stuff. This is where a new curiosity formed: how does the internet work?
 " />
-<meta property="og:url" content="http://localhost:1313/posts/intro-internet/" />
+<meta property="og:url" content="https://as51019.com/posts/intro-internet/" />
 <meta property="og:site_name" content="AS51019" />
 
   
   
-  <meta property="og:image" content="http://localhost:1313/posts/intro-internet/IRIS-link_NORDUnet.png">
+  <meta property="og:image" content="https://as51019.com/posts/intro-internet/IRIS-link_NORDUnet.png">
 
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="627">
@@ -170,23 +170,23 @@ Eventually I was deep into application development, having started with PHP, and
     
 <article class="post">
   <h1 class="post-title">
-    <a href="http://localhost:1313/posts/intro-internet/">Quick intro to how the internet really works</a>
+    <a href="https://as51019.com/posts/intro-internet/">Quick intro to how the internet really works</a>
   </h1>
-  <div class="post-meta"><time class="post-date">2024-05-02</time><span class="post-author">Kjartan Hrafnkelsson</span><span class="post-reading-time">9 min read (1793 words)</span></div>
+  <div class="post-meta"><time class="post-date">2024-05-02</time><span class="post-author">Kría Elínarbur</span><span class="post-reading-time">9 min read (1793 words)</span></div>
 
   
     <span class="post-tags">
       
-      #<a href="http://localhost:1313/tags/internet/">internet</a>&nbsp;
+      #<a href="https://as51019.com/tags/internet/">internet</a>&nbsp;
       
-      #<a href="http://localhost:1313/tags/bgp/">bgp</a>&nbsp;
+      #<a href="https://as51019.com/tags/bgp/">bgp</a>&nbsp;
       
-      #<a href="http://localhost:1313/tags/routing/">routing</a>&nbsp;
+      #<a href="https://as51019.com/tags/routing/">routing</a>&nbsp;
       
     </span>
   
   
-  <img src="http://localhost:1313/posts/intro-internet/IRIS-link_NORDUnet.png"
+  <img src="https://as51019.com/posts/intro-internet/IRIS-link_NORDUnet.png"
     class="post-cover"
     alt="Quick intro to how the internet really works"
     title="Cover Image" />
@@ -212,7 +212,7 @@ Eventually I was deep into application development, having started with PHP, and
 <p>A core element of this system is specificity. Your router will prefer routes that are <em>more specific</em>. A route for the prefix <code>192.168.1 via port0</code> will take priority over a route for <code>192.168 via port1</code>, if the destination address begins with <code>192.168.1</code>. This way you can target traffic bound to addresses with a certain prefix but leave other traffic within the same &ldquo;parent prefix&rdquo; alone. This is how your home router can communicate with your device despite having a route forwarding all traffic to your ISP.</p>
 <p>Lastly, your ISP also has some routers. In fact everyone on the internet has some routers. Really the internet is closer to &ldquo;just a bunch of routers&rdquo; than &ldquo;just a bunch of tubes&rdquo;. These routers similarly hold routing tables that tell traffic where to go.</p>
 <p>So when you send traffic to that Hetzner IP address, your home router will send it to your ISPs router which will then send it to another router which will the&hellip; I think you get the idea. We can even see this semi-visually with tools like <code>traceroute</code> or <code>mtr</code>:</p>
-<pre tabindex="0"><code>kjartan@fenrir:~$ mtr -4 -w hetzner.com
+<pre tabindex="0"><code>kria@rey01w01:~$ mtr -4 -w hetzner.com
 Start: 2024-05-02T00:52:02+0000
 HOST: fenrir                             Loss%   Snt   Last   Avg StDev
   1.|-- _gateway                          0.0%    10    0.5   0.4   0.1
@@ -232,7 +232,7 @@ HOST: fenrir                             Loss%   Snt   Last   Avg StDev
 <p>Of course, the actual value of this service comes from the fact that these networks maintain high capacity, redundant connections between places on behalf of the smaller guys. The cost is paid up by the purchasers of the service (ISPs) and a profit is made from marking the price up slightly (or not so slightly, <del>shoutout AS3320</del>).</p>
 <p>It&rsquo;s also worth mentioning that BGP identifies networks by an &ldquo;autonomous system number&rdquo; (&ldquo;ASN&rdquo;). They start with <code>AS</code> followed by up to ten digits. Though these days we only ever see one to six digits. This is why this &ldquo;blog&rdquo; is called <code>AS51019</code>, it&rsquo;s my ASN.</p>
 <p>Indeed, if we re-run our <code>mtr</code> from above with the <code>-z</code> flag we can see the ASNs each router belongs to:</p>
-<pre tabindex="0"><code>kjartan@fenrir:~$ mtr -4 -zw hetzner.com
+<pre tabindex="0"><code>kria@rey01w01:~$ mtr -4 -zw hetzner.com
 Start: 2024-05-02T01:03:49+0000
 HOST: fenrir                                    Loss%   Snt   Last   Avg StDev
   1. AS???    _gateway                           0.0%    10    0.5   0.4   0.1
@@ -244,7 +244,7 @@ HOST: fenrir                                    Loss%   Snt   Last   Avg StDev
   7. AS???    ???                               100.0    10    0.0   0.0   0.0
 </code></pre><p><code>AS6677</code> is my current ISP; <code>AS24940</code> is Hetzner. <code>AS???</code> is, of course, simply an AS we can&rsquo;t identify (usually because <em>some</em> assholes block ICMP).</p>
 <p>Similarly, we can see a transit network in a traceroute like this by tracing the route to something e.g. on another continent:</p>
-<pre tabindex="0"><code>kjartan@fenrir:~$ mtr -4 -zw 64.187.208.1
+<pre tabindex="0"><code>kria@rey01w01:~$ mtr -4 -zw 64.187.208.1
 Start: 2024-05-02T01:26:51+0000
 HOST: fenrir                                       Loss%   Snt   Last   Avg StDev
   1. AS???    _gateway                              0.0%    10    0.4   0.4   0.1
@@ -284,7 +284,7 @@ HOST: fenrir                                       Loss%   Snt   Last   Avg StDe
 <li><a href="https://discord.gg/Q3tZVbJYXH">&ldquo;the nettwork&rdquo; Discord server</a></li>
 </ul>
 <h1 id="questionscomments">Questions/comments<a href="#questionscomments" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h1>
-<p>If you&rsquo;d like to ask me something - perhaps inquiries related to the post rather than tech support on BGP etc. ;) - or have a comment I&rsquo;d be happy chat via <a href="mailto:kjartann@kjartann.is">kjartann@kjartann.is</a>.</p>
+<p>If you&rsquo;d like to ask me something - perhaps inquiries related to the post rather than tech support on BGP etc. ;) - or have a comment I&rsquo;d be happy chat via <a href="mailto:kria@kria.tel">kria@kria.tel</a>.</p>
 <img src="/owiehappy.gif" alt=":owiehappy: emoji" width="48" />
 
       </div></div>
@@ -299,7 +299,7 @@ HOST: fenrir                                       Loss%   Snt   Last   Avg StDe
     <div class="pagination__buttons">
         
         <span class="button previous">
-            <a href="http://localhost:1313/posts/aspa-bird2/">
+            <a href="https://as51019.com/posts/aspa-bird2/">
                 <span class="button__icon">←</span>
                 <span class="button__text">ASPA path validation in BIRD2 with Routinator and TypeScript</span>
             </a>
@@ -324,7 +324,7 @@ HOST: fenrir                                       Loss%   Snt   Last   Avg StDe
   <div class="footer__inner">
     
       <div class="copyright">
-        <span>© 2025 Octan Ltd. :: <a href="/credits">Credits</a></span>
+        <span>© 2025 Atlantic Crossing Limited. :: <a href="/credits">Credits</a></span>
     
       <span>:: <a href="/imprint">Imprint</a></span>
       </div>

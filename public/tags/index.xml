@@ -2,67 +2,67 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on AS51019</title>
-    <link>http://localhost:1313/tags/</link>
+    <link>https://as51019.com/tags/</link>
     <description>Recent content in Tags on AS51019</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 02 May 2024 23:27:27 +0000</lastBuildDate><atom:link href="http://localhost:1313/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 02 May 2024 23:27:27 +0000</lastBuildDate><atom:link href="https://as51019.com/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Aspa</title>
-      <link>http://localhost:1313/tags/aspa/</link>
+      <link>https://as51019.com/tags/aspa/</link>
       <pubDate>Thu, 02 May 2024 23:27:27 +0000</pubDate>
       
-      <guid>http://localhost:1313/tags/aspa/</guid>
+      <guid>https://as51019.com/tags/aspa/</guid>
       <description></description>
       <content></content>
     </item>
     
     <item>
       <title>Routing Security</title>
-      <link>http://localhost:1313/tags/routing-security/</link>
+      <link>https://as51019.com/tags/routing-security/</link>
       <pubDate>Thu, 02 May 2024 23:27:27 +0000</pubDate>
       
-      <guid>http://localhost:1313/tags/routing-security/</guid>
+      <guid>https://as51019.com/tags/routing-security/</guid>
       <description></description>
       <content></content>
     </item>
     
     <item>
       <title>Rpki</title>
-      <link>http://localhost:1313/tags/rpki/</link>
+      <link>https://as51019.com/tags/rpki/</link>
       <pubDate>Thu, 02 May 2024 23:27:27 +0000</pubDate>
       
-      <guid>http://localhost:1313/tags/rpki/</guid>
+      <guid>https://as51019.com/tags/rpki/</guid>
       <description></description>
       <content></content>
     </item>
     
     <item>
       <title>Bgp</title>
-      <link>http://localhost:1313/tags/bgp/</link>
+      <link>https://as51019.com/tags/bgp/</link>
       <pubDate>Thu, 02 May 2024 00:10:04 +0000</pubDate>
       
-      <guid>http://localhost:1313/tags/bgp/</guid>
+      <guid>https://as51019.com/tags/bgp/</guid>
       <description></description>
       <content></content>
     </item>
     
     <item>
       <title>Internet</title>
-      <link>http://localhost:1313/tags/internet/</link>
+      <link>https://as51019.com/tags/internet/</link>
       <pubDate>Thu, 02 May 2024 00:10:04 +0000</pubDate>
       
-      <guid>http://localhost:1313/tags/internet/</guid>
+      <guid>https://as51019.com/tags/internet/</guid>
       <description></description>
       <content></content>
     </item>
     
     <item>
       <title>Routing</title>
-      <link>http://localhost:1313/tags/routing/</link>
+      <link>https://as51019.com/tags/routing/</link>
       <pubDate>Thu, 02 May 2024 00:10:04 +0000</pubDate>
       
-      <guid>http://localhost:1313/tags/routing/</guid>
+      <guid>https://as51019.com/tags/routing/</guid>
       <description></description>
       <content></content>
     </item>

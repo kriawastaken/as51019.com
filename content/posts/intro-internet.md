@@ -48,7 +48,7 @@ Lastly, your ISP also has some routers. In fact everyone on the internet has som
 So when you send traffic to that Hetzner IP address, your home router will send it to your ISPs router which will then send it to another router which will the... I think you get the idea. We can even see this semi-visually with tools like `traceroute` or `mtr`:
 
 ```
-kjartan@fenrir:~$ mtr -4 -w hetzner.com
+kria@rey01w01:~$ mtr -4 -w hetzner.com
 Start: 2024-05-02T00:52:02+0000
 HOST: fenrir                             Loss%   Snt   Last   Avg StDev
   1.|-- _gateway                          0.0%    10    0.5   0.4   0.1
@@ -81,7 +81,7 @@ It's also worth mentioning that BGP identifies networks by an "autonomous system
 Indeed, if we re-run our `mtr` from above with the `-z` flag we can see the ASNs each router belongs to:
 
 ```
-kjartan@fenrir:~$ mtr -4 -zw hetzner.com
+kria@rey01w01:~$ mtr -4 -zw hetzner.com
 Start: 2024-05-02T01:03:49+0000
 HOST: fenrir                                    Loss%   Snt   Last   Avg StDev
   1. AS???    _gateway                           0.0%    10    0.5   0.4   0.1
@@ -98,7 +98,7 @@ HOST: fenrir                                    Loss%   Snt   Last   Avg StDev
 Similarly, we can see a transit network in a traceroute like this by tracing the route to something e.g. on another continent:
 
 ```
-kjartan@fenrir:~$ mtr -4 -zw 64.187.208.1
+kria@rey01w01:~$ mtr -4 -zw 64.187.208.1
 Start: 2024-05-02T01:26:51+0000
 HOST: fenrir                                       Loss%   Snt   Last   Avg StDev
   1. AS???    _gateway                              0.0%    10    0.4   0.4   0.1
@@ -142,6 +142,6 @@ HOST: fenrir                                       Loss%   Snt   Last   Avg StDe
 
 # Questions/comments
 
-If you'd like to ask me something - perhaps inquiries related to the post rather than tech support on BGP etc. ;) - or have a comment I'd be happy chat via [kjartann@kjartann.is](mailto:kjartann@kjartann.is).
+If you'd like to ask me something - perhaps inquiries related to the post rather than tech support on BGP etc. ;) - or have a comment I'd be happy chat via [kria@kria.tel](mailto:kria@kria.tel).
 
 <img src="/owiehappy.gif" alt=":owiehappy: emoji" width="48" />

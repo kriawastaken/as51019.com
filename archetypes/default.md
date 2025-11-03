@@ -1,6 +1,6 @@
 +++
 title = "{{ replace .Name "-" " " | title }}"
 date = {{ .Date }}
-author = "Kjartan Hrafnkelsson"
+author = "Kría Elínarbur"
 draft = true
 +++
